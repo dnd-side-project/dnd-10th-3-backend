@@ -1,20 +1,31 @@
----
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+<!-- 티켓 이슈 제목입니다. -->
+<!-- [FEAT] 이_티켓에서_작업할_내용을_한_줄로_요약해서_작성 -->
 
----
+## 요구사항
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+<!-- ex. [MEM-1-01] 소셜 회원가입 -->
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+[요구사항_ID] 소분류명
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## 상세 요구사항
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+<!-- 위 요구사항의 상세 요구사항을 작성해 주세요. -->
+
+## TODO
+
+<!-- 이번 티켓에서 작업할 내용(투두 리스트)을 작성해 주세요. -->
+
+- todo1
+- todo2
+
+## 예상 소요 시간
+<!-- 이 티켓을 처리하는 데에 필요한 예상 시간을 적어 주세요. -->
+
+## 기타 참고사항
+
+<!-- 없다면 적지 않으셔도 됩니다. -->
+
+## ✅ Issue 등록 전 확인 후 체크해 주세요! (x 표시 해 주세요.)
+
+- [ ] Assignees(이슈 담당자)를 지정했습니다.
+- [ ] Labels, Milestone을 등록했습니다.
