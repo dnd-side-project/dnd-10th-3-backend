@@ -1,3 +1,12 @@
+---
+name: Feature request
+about: 티켓 템플릿
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 <!-- 티켓 이슈 제목입니다. -->
 <!-- [FEAT] 이_티켓에서_작업할_내용을_한_줄로_요약해서_작성 -->
 
