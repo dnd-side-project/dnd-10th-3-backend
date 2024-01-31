@@ -81,5 +81,6 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }} # pem 키
         script: |
           sudo docker rm $(docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.SERVICE_NAME }}
           docker-compose up -d
           sudo docker image prune -f
