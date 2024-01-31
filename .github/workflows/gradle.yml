@@ -11,8 +11,7 @@ on:
   push:
     branches: [ "main" ]
 
-permissions:
-  contents: read
+permissions: write-all
 
 jobs:
   build:
