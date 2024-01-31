@@ -77,7 +77,7 @@ jobs:
       uses: appleboy/ssh-action@v0.1.4
       with:
         host: ${{ secrets.HOST }} 
-        username: root
+        username: ubuntu
         key: ${{ secrets.PRIVATE_KEY }} # pem 키
         script: |
           sudo docker rm $(docker ps -qa)
