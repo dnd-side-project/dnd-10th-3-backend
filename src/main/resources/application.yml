@@ -1,19 +1,9 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: root
-    password: ${SPRING_DATASOURCE_PASSWORD}
-
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+  profiles:
+    active: prod
+    include:
+      - s3
+      - redis
 
 springdoc:
   packages-to-scan: dnd.donworry
@@ -24,3 +14,4 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
+

@@ -24,6 +24,7 @@ application.properties
 .idea
 *.iws
 *.iml
+*.yml
 *.ipr
 *.yml
 out/
