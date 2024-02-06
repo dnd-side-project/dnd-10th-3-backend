@@ -8,8 +8,9 @@
 name: Donworry Backend CI/CD
 
 on:
-  push:
-    branches: [ "main" ]
+  pull_request:
+    types: [closed]
+    branches: 'main'
 
 permissions: write-all
 
@@ -27,24 +28,18 @@ jobs:
         distribution: 'temurin'
 
     # yml 주입
- #   - name: make ymls
- #     run: |
- #       cd ./src/main/resources
+    - name: make ymls
+      run: |
+        cd ./src/main/resources
         
-  #      touch ./application-prod.yml
-  #      echo "${{ secrets.APPLICATION_PROD }}" > ./application.yml
+        touch ./application-prod.yml
+        echo "${{ secrets.APPLICATION_PROD }}" > ./application.yml
    
-  #      touch ./application-redis.yml
-  #      echo "${{ secrets.APPLICATION_REDIS }}" > ./application-redis.yml
+        touch ./application-redis.yml
+        echo "${{ secrets.APPLICATION_REDIS }}" > ./application-redis.yml
         
-  #      touch ./application-mail.yml
-  #      echo "${{ secrets.APPLICATION_MAIL }}" > ./application-mail.yml
-        
-  #      touch ./secrets.yml
-  #      echo "${{ secrets.SECRETS }}" > ./secrets.yml
-        
-  #      touch ./application-s3.yml
-  #      echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
+        touch ./application-s3.yml
+        echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
         
     - name: Gradle 명령 실행을 위한 권한을 부여합니다
       run: chmod +x gradlew
