@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -24,6 +25,7 @@ application.properties
 *.iws
 *.iml
 *.ipr
+*.yml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
