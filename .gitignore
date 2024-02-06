@@ -23,6 +23,7 @@ application.properties
 .idea
 *.iws
 *.iml
+*.yml
 *.ipr
 out/
 !**/src/main/**/out/
