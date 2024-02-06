@@ -5,16 +5,6 @@ spring:
       - s3
       - redis
 
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true
-
 springdoc:
   packages-to-scan: dnd.donworry
   default-consumes-media-type: application/json;charset=UTF-8
