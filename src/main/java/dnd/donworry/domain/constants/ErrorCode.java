@@ -23,6 +23,7 @@ public enum ErrorCode {
     EMAIL_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "400", "이메일 인증에 실패하였습니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "403", "토큰 정보가 만료되었습니다. 로그인이 필요합니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "401", "토큰이 존재하지 않습니다."),
+    VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "401", "인증에 실패했습니다."),
 
     /* MEMBER */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "등록되지 않은 회원입니다."),

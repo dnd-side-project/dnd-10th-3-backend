@@ -9,8 +9,6 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResResult <T>{
 
-    private ErrorCode errorCode;
-    private ResponseCode responseCode;
     private String code;
     private String message;
     private T data;
@@ -18,7 +16,6 @@ public class ResResult <T>{
     @Override
     public String toString() {
         return "ResResult{" +
-                "responseCode=" + responseCode +
                 ", code='" + code +'\'' +
                 ", message='" + message +'\'' +
                 ", data=" +data +
