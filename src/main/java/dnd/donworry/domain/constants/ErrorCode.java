@@ -58,7 +58,6 @@ public enum ErrorCode {
 
     public <T> ResponseEntity<Object> toResponse(@Nullable T data) {
         return new ResponseEntity<>(ResResult.builder()
-                .errorCode(this)
                 .code(this.getCode())
                 .message(this.getMessage())
                 .data(data)
