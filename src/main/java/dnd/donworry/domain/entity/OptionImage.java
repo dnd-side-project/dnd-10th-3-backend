@@ -1,4 +1,4 @@
-package dnd.donworry.domain;
+package dnd.donworry.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,18 +8,14 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VoteLike extends BaseEntity {
-
+public class OptionImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @ManyToOne
-    private Vote vote;
-
-    @ManyToOne
-    private User user;
+    @OneToOne
+    private Selection selection;
 
     @Column(nullable = false)
-    private boolean status = true;
+    private String path;
 }
