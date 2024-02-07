@@ -1,4 +1,4 @@
-package dnd.donworry.domain;
+package dnd.donworry.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,18 +8,21 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentLike extends BaseEntity {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    private Comment comment;
-
-    @ManyToOne
     private User user;
 
+    @ManyToOne
+    private Vote vote;
+
     @Column(nullable = false)
-    private boolean status = true;
+    private String content;
+
+    @Column(nullable = false)
+    private int likes = 0;
 }

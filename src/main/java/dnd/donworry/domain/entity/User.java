@@ -1,4 +1,4 @@
-package dnd.donworry.domain;
+package dnd.donworry.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,14 +8,17 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OptionImage {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    private Selection selection;
+    @Column(nullable = false)
+    private String email;
 
     @Column(nullable = false)
-    private String path;
+    private String nickname;
+
+    @Column(nullable = false)
+    private String avatar;
 }
