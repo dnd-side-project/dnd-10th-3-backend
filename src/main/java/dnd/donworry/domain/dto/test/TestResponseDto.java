@@ -1,6 +1,11 @@
 package dnd.donworry.domain.dto.test;
 
-import lombok.*;
+import dnd.donworry.domain.entity.TestResult;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -12,5 +17,17 @@ public class TestResponseDto {
     private Long talk;
     private Long temperature;
     private String imageUrl;
+    private LocalDateTime createdAt;
 
+    public static TestResponseDto of(TestResult testResult) {
+        return new TestResponseDto(
+                testResult.getBuddy(),
+                testResult.getTrust(),
+                testResult.getLove(),
+                testResult.getTalk(),
+                testResult.getTemperature(),
+                testResult.getImageUrl(),
+                testResult.getCreatedAt()
+        );
+    }
 }

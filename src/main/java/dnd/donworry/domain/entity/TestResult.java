@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TestResult {
+public class TestResult extends BaseEntity{
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
@@ -49,4 +49,5 @@ public class TestResult {
                 .imageUrl(testResponseDto.getImageUrl())
                 .build();
     }
+
 }
