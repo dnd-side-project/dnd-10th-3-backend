@@ -11,7 +11,7 @@ import lombok.*;
 public class Vote extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     private User user;

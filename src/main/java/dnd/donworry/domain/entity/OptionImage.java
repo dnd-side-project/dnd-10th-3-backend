@@ -11,7 +11,7 @@ import lombok.*;
 public class OptionImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToOne
     private Selection selection;
