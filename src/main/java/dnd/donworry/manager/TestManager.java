@@ -43,10 +43,10 @@ public class TestManager {
 				high++;
 		}
 
-		return high >= 3 ? LOW_TEMPERATURE
-			: high == 2 ? MID_TEMPERATURE
-			: mid >= 2 || (high == 1 & mid == 1 & low == 1) ? HIGH_TEMPERATURE
-			: HIGHEST_TEMPERATURE;
+		return high >= 3 ? HIGHEST_TEMPERATURE
+			: high == 2 ? HIGH_TEMPERATURE
+			: mid >= 2 || (high == 1 & mid == 1 & low == 1) ? MID_TEMPERATURE
+			: LOW_TEMPERATURE;
 	}
 
 	private String makeImageUrl(int temperature) { // url 수정 필요
