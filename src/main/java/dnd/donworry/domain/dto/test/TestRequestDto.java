@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @Getter
 public class TestRequestDto {
-    private String buddy;
-    private Long trust;
-    private Long love;
-    private Long talk;
+	private String buddy;
+	private Long trust;
+	private Long love;
+	private Long talk;
+
+	public Long[] factorList() {
+		return new Long[] {trust, love, talk};
+	}
 }
