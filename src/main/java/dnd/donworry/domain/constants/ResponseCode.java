@@ -1,7 +1,6 @@
 package dnd.donworry.domain.constants;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -12,7 +11,8 @@ import lombok.ToString;
 public enum ResponseCode {
 	/*TEST*/
 	TEST_SAVED(HttpStatus.OK, "200", "테스트 결과 저장에 성공했습니다."),
-	TEST_SUCCESS(HttpStatus.OK, "200", "테스트 결과 조회에 성공했습니다."),
+	TEST_SUCCESS(HttpStatus.OK, "200", "테스트 결과 생성에 성공했습니다."),
+	TEST_FIND_SUCCESS(HttpStatus.OK, "200", "테스트 결과 조회에 성공했습니다."),
 
 	/*AUTH*/
 	MEMBER_SAVE(HttpStatus.OK, "200", "회원가입에 성공했습니다."),
@@ -52,11 +52,11 @@ public enum ResponseCode {
 		this.message = message;
 	}
 
-	public <T> ResponseEntity<Object> toResponse(@Nullable T data) {
-		return new ResponseEntity<>(ResResult.builder()
-			.code(this.getCode())
-			.message(this.getMessage())
+	public <T> ResResult<T> toResponse(@Nullable T data) {
+		return ResResult.<T>builder()
+			.code(this.code)
+			.message(this.message)
 			.data(data)
-			.build(), this.getHttpStatus());
+			.build();
 	}
 }
