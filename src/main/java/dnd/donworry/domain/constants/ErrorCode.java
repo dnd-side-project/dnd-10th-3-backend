@@ -11,6 +11,9 @@ public enum ErrorCode {
 	/* COMMON */
 	NOT_AUTHORIZED_CONTENT("401", "접근 권한이 없습니다."),
 
+	/* TEST */
+	TEST_NOT_FOUND("404", "테스트 결과가 존재하지 않습니다."),
+
 	/* AUTH */
 	NO_JWT_TOKEN("401", "로그인 정보가 존재하지 않습니다. 다시 로그인해 주세요."),
 	NOT_AUTHORIZED_TOKEN("403", "접근 권한이 없습니다."),

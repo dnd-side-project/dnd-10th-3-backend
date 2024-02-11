@@ -2,9 +2,11 @@ package dnd.donworry.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.test.TestRequestDto;
 import dnd.donworry.domain.dto.test.TestResponseDto;
 import dnd.donworry.domain.entity.TestResult;
+import dnd.donworry.exception.CustomException;
 import dnd.donworry.manager.TestManager;
 import dnd.donworry.repository.TestResultRepository;
 import dnd.donworry.service.TestService;
@@ -22,14 +24,15 @@ public class TestServiceImpl implements TestService {
 	@Override
 	public TestResponseDto makeResult(String username, TestRequestDto testRequestDto) {
 		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		if (!username.isEmpty())
+		if (username != null)
 			save(username, testReponseDto);
 		return testReponseDto;
 	}
 
 	@Override
 	public TestResponseDto findResult(Long testResultId) { // 예외처리 필요
-		return testResultRepository.findById(testResultId).map(TestResponseDto::of).orElse(null);
+		return testResultRepository.findById(testResultId).map(TestResponseDto::of).orElseThrow(
+			() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 	}
 
 	@Transactional
