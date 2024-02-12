@@ -20,11 +20,11 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
 dependencies {
 
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-//	testImplementation 'org.springframework.security:spring-security-test'
+	//SECURITY
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 	// TEST
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -46,12 +46,20 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// REDIS
-	implementation group: 'org.springframework.data', name: 'spring-data-redis', version: '3.2.2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// AWS
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.3'
+
+	//JSON
+	implementation 'org.json:json:20231013'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

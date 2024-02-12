@@ -1,5 +1,6 @@
-package dnd.donworry.domain;
+package dnd.donworry.domain.entity;
 
+import dnd.donworry.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String email;
@@ -21,4 +22,10 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String avatar;
+
+    public void updateNickname(String nickname) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+    }
 }
