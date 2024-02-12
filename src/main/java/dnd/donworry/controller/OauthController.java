@@ -2,6 +2,7 @@ package dnd.donworry.controller;
 
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
+import dnd.donworry.domain.dto.jwt.TokenResponseDto;
 import dnd.donworry.service.OauthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +34,7 @@ public class OauthController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
     })
-    public ResResult<?> login(@Valid @RequestParam(value = "code") String code, HttpServletResponse response) {
+    public ResResult<TokenResponseDto> login(@Valid @RequestParam(value = "code") String code, HttpServletResponse response) {
         return ResponseCode.MEMBER_LOGIN.toResponse(oauthService.loginWithKakao(code, response));
     }
 }
