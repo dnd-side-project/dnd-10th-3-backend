@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -51,9 +52,10 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<VoteResponseDto> create(@RequestPart VoteRequestDto voteRequestDto,
-		@RequestPart List<MultipartFile> images) {
+		@RequestPart @Nullable List<MultipartFile> images) {
 		String username = "test"; // Authentication.getName()으로 변경
-		voteRequestDto.mapImages(images);
+		if (images != null)
+			voteRequestDto.mapImages(images);
 		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(username, voteRequestDto));
 	}
 }
