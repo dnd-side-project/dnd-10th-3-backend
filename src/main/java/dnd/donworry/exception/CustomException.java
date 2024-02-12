@@ -1,6 +1,7 @@
 package dnd.donworry.exception;
 
 import dnd.donworry.domain.constants.ErrorCode;
+
 import lombok.Getter;
 
 @Getter

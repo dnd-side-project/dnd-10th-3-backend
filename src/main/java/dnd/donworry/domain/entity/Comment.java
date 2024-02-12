@@ -1,3 +1,4 @@
+
 package dnd.donworry.domain.entity;
 
 import jakarta.persistence.*;

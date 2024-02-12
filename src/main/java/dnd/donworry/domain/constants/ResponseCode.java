@@ -7,6 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public enum ResponseCode {
+
 	/*TEST*/
 	TEST_SAVED("200", "테스트 결과 저장에 성공했습니다."),
 	TEST_SUCCESS("200", "테스트 결과 생성에 성공했습니다."),
@@ -25,6 +26,7 @@ public enum ResponseCode {
 	MEMBER_EXISTS("200", "회원존재 여부 조회에 성공했습니다."),
 	AVATAR_UPLOAD("200", "이미지 업로드에 성공했습니다."),
 	AVATAR_DELETE("200", "이미지 삭제에 성공했습니다."),
+  NICKNAME_UPDATE("200", "닉네임 변경에 성공했습니다."),
 
 	/* VOTE */
 	VOTE_CREATED("200", "투표 생성에 성공했습니다."),

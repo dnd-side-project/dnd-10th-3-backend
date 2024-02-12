@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
     include:
       - s3
       - redis
@@ -15,3 +15,8 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

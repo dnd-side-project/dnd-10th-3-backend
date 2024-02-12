@@ -12,7 +12,9 @@ public class UserVote extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
+
 
     @ManyToOne
     private User user;
