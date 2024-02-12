@@ -34,6 +34,11 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	public VoteResponseDto create(String username, VoteRequestDto voteRequestDto) {
+
+		if (voteRequestDto.getSelections().size() < 2) {
+			throw new CustomException(ErrorCode.SELECTION_SIZE_UNDER_TWO);
+		}
+
 		User user = new User(1L, "test", "test", ""); // 실제 유저로 변경
 		Vote vote = voteRepository.save(Vote.toEntity(voteRequestDto, user));
 

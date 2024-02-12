@@ -47,7 +47,8 @@ public enum ErrorCode {
 	INVALID_REQUEST("400", "유효하지 않은 입력값 입니다."),
 
 	/* UNEXPECTED */
-	UNEXPECTED_EXCEPTION("500", "예상치 못한 에러가 발생하였습니다.");
+	UNEXPECTED_EXCEPTION("500", "예상치 못한 에러가 발생하였습니다."),
+	SELECTION_SIZE_UNDER_TWO("400", "선택지는 최소 2개 이상이어야 합니다.");
 
 	private final String code;
 	private final String message;
