@@ -11,10 +11,10 @@ import dnd.donworry.manager.TestManager;
 import dnd.donworry.repository.TestResultRepository;
 import dnd.donworry.service.TestService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
 	private final TestResultRepository testResultRepository;
@@ -30,7 +30,7 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public TestResponseDto findResult(Long testResultId) { // 예외처리 필요
+	public TestResponseDto findResult(Long testResultId) {
 		return testResultRepository.findById(testResultId).map(TestResponseDto::of).orElseThrow(
 			() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 	}

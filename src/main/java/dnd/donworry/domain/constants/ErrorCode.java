@@ -36,6 +36,8 @@ public enum ErrorCode {
 	/* VOTE */
 	VOTE_ALREADY_DONE("400", "이미 투표에 참가하셨습니다."),
 	VOTE_NOT_FOUND("404", "투표 정보가 존재하지 않습니다."),
+	IMAGE_UPLOAD_FAIL("500", "이미지 업로드에 실패하였습니다."),
+	SELECTION_SAVE_FAILED("500", "선택지 생성에 실패하였습니다."),
 
 	/* LIKES */
 	LIKES_NOT_FOUND("404", "좋아요 정보가 존재하지 않습니다."),
@@ -45,7 +47,8 @@ public enum ErrorCode {
 	INVALID_REQUEST("400", "유효하지 않은 입력값 입니다."),
 
 	/* UNEXPECTED */
-	UNEXPECTED_EXCEPTION("500", "예상치 못한 에러가 발생하였습니다.");
+	UNEXPECTED_EXCEPTION("500", "예상치 못한 에러가 발생하였습니다."),
+	SELECTION_SIZE_UNDER_TWO("400", "선택지는 최소 2개 이상이어야 합니다.");
 
 	private final String code;
 	private final String message;

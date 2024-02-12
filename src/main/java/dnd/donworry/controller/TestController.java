@@ -81,7 +81,7 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"403\", \n \"message\": \"접근 권한이 없습니다.\"\n}"))),
 		@ApiResponse(responseCode = "401", description = "토큰이 존재하지 않음", content = @Content(
 			mediaType = "application/json",
-			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"토큰이 존재하지 않습니다.\"\n}")))
+			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
 	public ResResult<TestResponseDto> findResult(@PathVariable Long resultId) {
 		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId));

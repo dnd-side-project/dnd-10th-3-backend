@@ -27,9 +27,9 @@ public enum ResponseCode {
 	AVATAR_DELETE("200", "이미지 삭제에 성공했습니다."),
 
 	/* VOTE */
-	VOTING_SUCCESS("200", "투표 생성에 성공했습니다."),
-	VOTING_UPDATE("200", "투표 수정에 성공했습니다."),
-	VOTING_DELETE("200", "투표 취소에 성공했습니다."),
+	VOTE_CREATED("200", "투표 생성에 성공했습니다."),
+	VOTE_MODIFIED("200", "투표 수정에 성공했습니다."),
+	VOTE_DELETED("200", "투표 취소에 성공했습니다."),
 
 	/* LIKES */
 	LIKES_ADD("200", "좋아요 추가에 성공했습니다."),
