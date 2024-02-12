@@ -1,5 +1,6 @@
 package dnd.donworry.domain.entity;
 
+
 import dnd.donworry.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,8 @@ public class VoteLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+
+    private Long id;
 
     @ManyToOne
     private Vote vote;

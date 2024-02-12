@@ -1,6 +1,8 @@
 package dnd.donworry.domain.entity;
 
+
 import dnd.donworry.domain.BaseEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +30,5 @@ public class User extends BaseEntity {
             this.nickname = nickname;
         }
     }
+
 }

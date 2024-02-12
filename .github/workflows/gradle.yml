@@ -8,8 +8,9 @@
 name: Donworry Backend CI/CD
 
 on:
-  push:
-    branches: [ "main" ]
+  pull_request:
+    types: [closed]
+    branches: 'main'
 
 permissions: write-all
 
@@ -27,24 +28,18 @@ jobs:
         distribution: 'temurin'
 
     # yml 주입
- #   - name: make ymls
- #     run: |
- #       cd ./src/main/resources
+    - name: make ymls
+      run: |
+        cd ./src/main/resources
         
-  #      touch ./application-prod.yml
-  #      echo "${{ secrets.APPLICATION_PROD }}" > ./application.yml
+        touch ./application-prod.yml
+        echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yml
    
-  #      touch ./application-redis.yml
-  #      echo "${{ secrets.APPLICATION_REDIS }}" > ./application-redis.yml
+        touch ./application-redis.yml
+        echo "${{ secrets.APPLICATION_REDIS }}" > ./application-redis.yml
         
-  #      touch ./application-mail.yml
-  #      echo "${{ secrets.APPLICATION_MAIL }}" > ./application-mail.yml
-        
-  #      touch ./secrets.yml
-  #      echo "${{ secrets.SECRETS }}" > ./secrets.yml
-        
-  #      touch ./application-s3.yml
-  #      echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
+        touch ./application-s3.yml
+        echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
         
     - name: Gradle 명령 실행을 위한 권한을 부여합니다
       run: chmod +x gradlew
@@ -52,7 +47,7 @@ jobs:
     - name: Gradle build를 수행합니다
       run: ./gradlew build\
 
-    - name: 테스트 결과를 PR에 코멘트로 등록합니다
+    - name: 테스트 결과를 PR에 코멘트로 등록합니다.
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
@@ -71,6 +66,13 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.SERVICE_NAME }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.SERVICE_NAME }}
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
     
     # 도커 컨테이너 변경 
     - name: Deploy

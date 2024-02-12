@@ -1,7 +1,6 @@
-package dnd.donworry.domain;
 
-import dnd.donworry.domain.entity.User;
-import dnd.donworry.domain.entity.Vote;
+package dnd.donworry.domain.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +13,7 @@ public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     private User user;

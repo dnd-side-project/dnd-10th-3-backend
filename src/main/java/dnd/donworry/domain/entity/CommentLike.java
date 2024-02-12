@@ -1,6 +1,6 @@
 package dnd.donworry.domain.entity;
 
-import dnd.donworry.domain.BaseEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,10 +13,12 @@ public class CommentLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+
+    private Long id;
 
     @ManyToOne
-    private dnd.donworry.domain.Comment comment;
+    private Comment comment;
+
 
     @ManyToOne
     private User user;
