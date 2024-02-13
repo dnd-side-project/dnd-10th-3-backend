@@ -41,6 +41,12 @@ jobs:
         touch ./application-s3.yml
         echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
         
+        touch ./application-jwt.yml
+        echo "${{ secrets.APPLICATION_JWT }}" > ./application-jwt.yml
+        
+        touch ./application-kakao.yml
+        echo "${{ secrets.APPLICATION_KAKAO }}" > ./application-kakao.yml
+        
     - name: Gradle 명령 실행을 위한 권한을 부여합니다
       run: chmod +x gradlew
 
