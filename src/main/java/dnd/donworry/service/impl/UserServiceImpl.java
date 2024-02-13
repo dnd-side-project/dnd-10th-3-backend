@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByEmail(email).get();
 
         if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
-            throw new CustomException(ErrorCode.EMAIL_DUPLICATION);
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATION);
         }
 
         user.updateNickname(nickname);

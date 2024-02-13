@@ -30,7 +30,7 @@ public enum ErrorCode {
 	FILE_NOT_EXIST("404", "파일이 존재하지 않습니다."),
 	SEIZED_TOKEN_DETECTED("403", "토큰 정보가 잘못되었습니다."),
 	EMAIL_DUPLICATION("400", "이미 가입된 이메일 입니다."),
-	USERNAME_DUPLICATION("400", "이미 존재하는 닉네임 입니다."),
+	NICKNAME_DUPLICATION("400", "이미 존재하는 닉네임 입니다."),
 
 	/* VOTE */
 	VOTE_ALREADY_DONE("400", "이미 투표에 참가하셨습니다."),
