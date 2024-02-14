@@ -1,8 +1,12 @@
 package dnd.donworry.domain.entity;
 
+import dnd.donworry.domain.constants.PreQuestion_AGE;
+import dnd.donworry.domain.constants.PreQuestion_Gender;
 import dnd.donworry.domain.dto.test.TestResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
@@ -41,6 +45,14 @@ public class TestResult extends BaseEntity {
 
 	@Column(nullable = false)
 	private String imageUrl;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PreQuestion_AGE age;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PreQuestion_Gender gender;
 
 	public static TestResult toEntity(String username, TestResponseDto testResponseDto) {
 		return TestResult.builder()

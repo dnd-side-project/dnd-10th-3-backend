@@ -2,6 +2,8 @@ package dnd.donworry.domain.dto.test;
 
 import java.time.LocalDateTime;
 
+import dnd.donworry.domain.constants.PreQuestion_AGE;
+import dnd.donworry.domain.constants.PreQuestion_Gender;
 import dnd.donworry.domain.entity.TestResult;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(name = "테스트 결과 API Response")
 public class TestResponseDto {
+
+	@Schema(description = "상대방 나이", example = "20대")
+	private PreQuestion_AGE age;
+
+	@Schema(description = "상대방 성별", example = "남자")
+	private PreQuestion_Gender gender;
 
 	@Schema(description = "상대방 닉네임", example = "JooHyun")
 	private String buddy;
@@ -40,6 +48,8 @@ public class TestResponseDto {
 
 	public static TestResponseDto of(TestResult testResult) {
 		return TestResponseDto.builder()
+			.age(testResult.getAge())
+			.gender(testResult.getGender())
 			.buddy(testResult.getBuddy())
 			.trust(testResult.getTrust())
 			.love(testResult.getLove())
@@ -52,6 +62,8 @@ public class TestResponseDto {
 
 	public static TestResponseDto of(TestRequestDto testRequestDto, int temperature, String imageUrl) {
 		return TestResponseDto.builder()
+			.age(testRequestDto.getAge())
+			.gender(testRequestDto.getGender())
 			.buddy(testRequestDto.getBuddy())
 			.trust(testRequestDto.getTrust())
 			.love(testRequestDto.getLove())
