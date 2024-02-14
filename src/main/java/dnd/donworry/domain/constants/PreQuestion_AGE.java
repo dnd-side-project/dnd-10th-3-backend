@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PreQuestion_AGE {
-	UNDER_TWENTY("20대 미만"),
+	TEN("10대"),
 	TWENTY("20대"),
 	THIRTY("30대"),
-	OVER_FORTY("40대 이상");
+	FORTY("40대");
 
 	private final String age;
 
