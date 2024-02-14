@@ -1,6 +1,7 @@
 
 package dnd.donworry.domain.entity;
 
+import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,18 @@ public class Comment extends BaseEntity {
 
     @Column(nullable = false)
     private int likes = 0;
+
+    public static Comment toEntity(Vote vote, User user, CommentRequestDto commentRequestDto) {
+        return Comment.builder()
+                .content(commentRequestDto.getContent())
+                .user(user)
+                .vote(vote)
+                .build();
+    }
+
+    public void updateContent(String content) {
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }
