@@ -52,7 +52,7 @@ public enum ErrorCode {
 
 	/* COMMENT */
 	COMMENT_NOT_FOUNT("404", "댓글이 존재하지 않습니다."),
-	COMMENT_NOT_MATCH("403", "댓글 작성자와 수정자가 일치하지 않습니다.");
+	COMMENT_NOT_MATCH("403", "댓글 작성자와 수정자가 일치하지 않습니다."),
 
 	AGE_NOT_FOUND("400", "나이 정보가 존재하지 않습니다."),
 	GENDER_NOT_FOUND("400", "성별 정보가 존재하지 않습니다.");
