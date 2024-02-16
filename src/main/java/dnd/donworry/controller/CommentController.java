@@ -47,7 +47,7 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    @Operation(summary = "투표 생성", description = "인증된 회원이 투표를 생성합니다.")
+    @Operation(summary = "투표 수정", description = "인증된 회원이 투표를 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 수정 성공"),
 
@@ -71,7 +71,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    @Operation(summary = "투표 생성", description = "인증된 회원이 투표를 생성합니다.")
+    @Operation(summary = "투표 삭제", description = "인증된 회원이 투표를 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "댓글 삭제 실패", content = @Content(
