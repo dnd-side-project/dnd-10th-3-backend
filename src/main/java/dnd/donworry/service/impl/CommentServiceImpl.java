@@ -28,16 +28,14 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentResponseDto createComment(CommentRequestDto commentRequestDto, Long voteId, String email) {
-        Vote vote = voteRepository.findById(voteId)
-                .orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
 
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Comment savedComment = commentRepository.save(Comment.toEntity(vote, user, commentRequestDto));
+        Comment savedComment = commentRepository.save(
+                Comment.toEntity(findVote(voteId), findUser(email), commentRequestDto));
 
         return CommentResponseDto.of(savedComment);
     }
+
+
 
     @Transactional
     @Override
@@ -57,15 +55,28 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment validateUserAndComment(Long commentId, String email) {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUNT));
+        User user = findUser(email);
+        Comment comment = findComment(commentId);
         if (!user.getId().equals(comment.getUser().getId())) {
             throw new CustomException(ErrorCode.COMMENT_NOT_MATCH);
         }
         return comment;
     }
 
+    private Comment findComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUNT));
+        return comment;
+    }
 
+    private User findUser(String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        return user;
+    }
+
+    private Vote findVote(Long voteId) {
+        return voteRepository.findById(voteId)
+                .orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
+    }
 }
