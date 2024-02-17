@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import dnd.donworry.domain.constants.Category;
 import dnd.donworry.domain.dto.selection.SelectionRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,9 @@ public class VoteRequestDto {
 
 	@Schema(description = "투표 시작일", example = "2021-08-01T00:00:00")
 	private LocalDateTime closeDate;
+
+	@Schema(description = "카테고리", example = "축의금")
+	private Category category;
 
 	public void mapImages(List<MultipartFile> images) {
 		for (int i = 0; i < selections.size(); i++) {
