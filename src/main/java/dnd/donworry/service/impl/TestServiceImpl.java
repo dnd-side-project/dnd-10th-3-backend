@@ -27,10 +27,16 @@ public class TestServiceImpl implements TestService {
 
 	@Transactional
 	@Override
-	public TestResponseDto makeResult(String email, TestRequestDto testRequestDto) {
+	public TestResponseDto makeResultWithUser(String email, TestRequestDto testRequestDto) {
 		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		if (email != null)
-			save(email, testReponseDto);
+		save(email, testReponseDto);
+		return testReponseDto;
+	}
+
+	@Transactional
+	@Override
+	public TestResponseDto makeResultWithOutUser(TestRequestDto testRequestDto) {
+		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
 		return testReponseDto;
 	}
 

@@ -52,7 +52,7 @@ public class TestController {
 	}
 
 	@PostMapping("/result")
-	@Operation(summary = "테스트 결과 생성", description = "일반적인 테스트 진행 후 결과를 생성합니다. 비회원인 경우 백그라운드에 저장되며 회원가입 시 저장된 결과를 불러옵니다. 회원인 경우에는 바로 결과가 저장됩니다.")
+	@Operation(summary = "테스트 결과 생성 및 저장", description = "회원의 일반적인 테스트 진행 후 결과를 생성하고 저장합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "테스트 결과 생성 성공"),
 		@ApiResponse(responseCode = "400", description = "테스트 결과 생성 실패", content = @Content(
@@ -65,8 +65,9 @@ public class TestController {
 	public ResResult<TestResponseDto> makeResult(@RequestBody TestRequestDto testRequestDto,
 		@Parameter(hidden = true) Authentication authentication) {
 		return authentication == null
-			? ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(null, testRequestDto))
-			: ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(authentication.getName(), testRequestDto));
+			? ResponseCode.TEST_SUCCESS.toResponse(testService.makeResultWithUser(null, testRequestDto))
+			: ResponseCode.TEST_SUCCESS.toResponse(
+			testService.makeResultWithUser(authentication.getName(), testRequestDto));
 	}
 
 	@GetMapping("/result/{resultId}")
@@ -93,5 +94,23 @@ public class TestController {
 		@Parameter(hidden = true) Authentication authentication) {
 		log.info("email: {}", authentication.getName());
 		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(authentication.getName(), resultId));
+	}
+
+	@PostMapping("/result_no_user")
+	@Operation(summary = "비회원 테스트 결과 생성", description = "비회원이 테스트 결과를 생성합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "테스트 결과 조회 성공"),
+		@ApiResponse(responseCode = "400", description = "테스트 결과 조회 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"400\", \n \"message\": \"테스트 결과 조회에 실패했습니다. \"\n}"))),
+		@ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}"))),
+		@ApiResponse(responseCode = "404", description = "테스트 결과 없음", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"404\", \n \"message\": \"해당 테스트 결과가 존재하지 않습니다.\"\n}")))
+	})
+	public ResResult<TestResponseDto> makeResultWithOutUser(@RequestBody TestRequestDto testRequestDto) {
+		return ResponseCode.TEST_SUCCESS.toResponse(testService.makeResultWithOutUser(testRequestDto));
 	}
 }
