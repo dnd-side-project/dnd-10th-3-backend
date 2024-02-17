@@ -14,9 +14,11 @@ import dnd.donworry.repository.UserRepository;
 import dnd.donworry.service.TestService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TestServiceImpl implements TestService {
 
 	private final TestResultRepository testResultRepository;
@@ -33,14 +35,18 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public TestResponseDto findResult(Long testResultId) {
-		return testResultRepository.findById(testResultId).map(TestResponseDto::of).orElseThrow(
-			() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
+	public TestResponseDto findResult(String email, Long testResultId) {
+		User user = userRepository.findByEmailCustom(email);
+		if (!user.getEmail().equals(email)) {
+			throw new CustomException(ErrorCode.MEMBER_MISSMATCH);
+		}
+		return testResultRepository.findById(testResultId).map(TestResponseDto::of)
+			.orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 	}
 
 	@Transactional
 	public void save(String nickname, TestResponseDto testResponseDto) {
-		User user = userRepository.findByEmail(nickname);
+		User user = userRepository.findByEmailCustom(nickname);
 		testResultRepository.save(TestResult.toEntity(user, testResponseDto));
 	}
 

@@ -4,5 +4,5 @@ import dnd.donworry.domain.entity.User;
 
 public interface UserRepositoryCustom {
 
-	User findByEmail(String email);
+	User findByEmailCustom(String email);
 }

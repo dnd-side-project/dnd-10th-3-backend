@@ -40,7 +40,7 @@ public class VoteServiceImpl implements VoteService {
 		if (voteRequestDto.getSelections().size() < 2) {
 			throw new CustomException(ErrorCode.SELECTION_SIZE_UNDER_TWO);
 		}
-		User user = userRepository.findByEmail(email);
+		User user = userRepository.findByEmailCustom(email);
 		Vote vote = voteRepository.save(Vote.toEntity(voteRequestDto, user));
 
 		List<SelectionResponseDto> selectionResponseDtos = saveSelections(voteRequestDto.getSelections(), vote);

@@ -1,5 +1,6 @@
 package dnd.donworry.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,13 +14,16 @@ import dnd.donworry.domain.dto.test.TestRequestDto;
 import dnd.donworry.domain.dto.test.TestResponseDto;
 import dnd.donworry.service.TestService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/test")
 @RequiredArgsConstructor
@@ -41,9 +45,9 @@ public class TestController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<?> save(@RequestBody TestResponseDto testResponseDto) {
-		String username = "test"; // Authentication.getName()으로 변경
-		testService.save(username, testResponseDto);
+	public ResResult<?> save(@RequestBody TestResponseDto testResponseDto,
+		@Parameter(hidden = true) Authentication authentication) {
+		testService.save(authentication.getName(), testResponseDto);
 		return ResponseCode.TEST_SUCCESS.toResponse(null);
 	}
 
@@ -58,9 +62,9 @@ public class TestController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<TestResponseDto> makeResult(@RequestBody TestRequestDto testRequestDto) {
-		String username = "test"; // Authentication.getName()으로 변경
-		return ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(username, testRequestDto));
+	public ResResult<TestResponseDto> makeResult(@RequestBody TestRequestDto testRequestDto,
+		@Parameter(hidden = true) Authentication authentication) {
+		return ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(authentication.getName(), testRequestDto));
 	}
 
 	@GetMapping("/result/{resultId}")
@@ -83,7 +87,9 @@ public class TestController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
-	public ResResult<TestResponseDto> findResult(@PathVariable Long resultId) {
-		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId));
+	public ResResult<TestResponseDto> findResult(@PathVariable("resultId") Long resultId,
+		@Parameter(hidden = true) Authentication authentication) {
+		log.info("email: {}", authentication.getName());
+		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(authentication.getName(), resultId));
 	}
 }

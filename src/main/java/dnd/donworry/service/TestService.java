@@ -8,5 +8,5 @@ public interface TestService {
 
 	TestResponseDto makeResult(String username, TestRequestDto testRequestDto);
 
-	TestResponseDto findResult(Long testResultId);
+	TestResponseDto findResult(String email, Long testResultId);
 }
