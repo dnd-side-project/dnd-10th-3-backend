@@ -57,6 +57,8 @@ public class TestResult extends BaseEntity {
 
 	public static TestResult toEntity(User user, TestResponseDto testResponseDto) {
 		return TestResult.builder()
+			.age(PreQuestion_AGE.of(testResponseDto.getAge()))
+			.gender(PreQuestion_Gender.of(testResponseDto.getGender()))
 			.user(user)
 			.buddy(testResponseDto.getBuddy())
 			.trust(testResponseDto.getTrust())

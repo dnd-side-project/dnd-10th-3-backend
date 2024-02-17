@@ -6,7 +6,9 @@ import dnd.donworry.domain.dto.test.TestResponseDto;
 public interface TestService {
 	void save(String username, TestResponseDto testResponseDto);
 
-	TestResponseDto makeResult(String username, TestRequestDto testRequestDto);
+	TestResponseDto makeResultWithUser(String username, TestRequestDto testRequestDto);
+	
+	TestResponseDto makeResultWithOutUser(TestRequestDto testRequestDto);
 
 	TestResponseDto findResult(String email, Long testResultId);
 }

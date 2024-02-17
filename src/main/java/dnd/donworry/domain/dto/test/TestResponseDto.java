@@ -2,8 +2,6 @@ package dnd.donworry.domain.dto.test;
 
 import java.time.LocalDateTime;
 
-import dnd.donworry.domain.constants.PreQuestion_AGE;
-import dnd.donworry.domain.constants.PreQuestion_Gender;
 import dnd.donworry.domain.entity.TestResult;
 import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,10 +18,10 @@ import lombok.NoArgsConstructor;
 public class TestResponseDto {
 
 	@Schema(description = "상대방 나이", example = "20대")
-	private PreQuestion_AGE age;
+	private String age;
 
 	@Schema(description = "상대방 성별", example = "남자")
-	private PreQuestion_Gender gender;
+	private String gender;
 
 	@Schema(description = "상대방 닉네임", example = "JooHyun")
 	private String buddy;
@@ -49,8 +47,8 @@ public class TestResponseDto {
 
 	public static TestResponseDto of(TestResult testResult) {
 		return TestResponseDto.builder()
-			.age(testResult.getAge())
-			.gender(testResult.getGender())
+			.age(testResult.getAge().name())
+			.gender(testResult.getGender().name())
 			.buddy(testResult.getBuddy())
 			.trust(testResult.getTrust())
 			.love(testResult.getLove())
