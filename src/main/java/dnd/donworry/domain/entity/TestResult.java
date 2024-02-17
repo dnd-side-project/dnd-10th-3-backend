@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,8 +26,8 @@ public class TestResult extends BaseEntity {
 	@GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private String username;
+	@ManyToOne
+	private User user;
 
 	@Column(nullable = false)
 	private String buddy;
@@ -54,9 +55,9 @@ public class TestResult extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private PreQuestion_Gender gender;
 
-	public static TestResult toEntity(String username, TestResponseDto testResponseDto) {
+	public static TestResult toEntity(User user, TestResponseDto testResponseDto) {
 		return TestResult.builder()
-			.username(username)
+			.user(user)
 			.buddy(testResponseDto.getBuddy())
 			.trust(testResponseDto.getTrust())
 			.love(testResponseDto.getLove())

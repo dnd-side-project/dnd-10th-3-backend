@@ -1,11 +1,12 @@
 package dnd.donworry.domain.dto.vote;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import dnd.donworry.domain.constants.Category;
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.Vote;
+import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,14 +47,17 @@ public class VoteResponseDto {
 	@Schema(description = "투표 상태", example = "false")
 	private boolean status;
 
+	@Schema(description = "카테고리", example = "축의금")
+	private Category category;
+
 	@Schema(description = "투표 마감일", example = "2021-08-01T00:00:00")
-	private LocalDateTime closeDate;
+	private String closeDate;
 
-	@Schema(description = "생성일", example = "2021-07-01T00:00:00")
-	private LocalDateTime createdAt;
+	@Schema(description = "생성일", example = "")
+	private String createdAt;
 
-	@Schema(description = "수정일", example = "2021-07-01T00:00:00")
-	private LocalDateTime updatedAt;
+	@Schema(description = "수정일", example = "")
+	private String updatedAt;
 
 	public static VoteResponseDto of(Vote vote, List<SelectionResponseDto> selections) {
 		return VoteResponseDto.builder()
@@ -66,9 +70,9 @@ public class VoteResponseDto {
 			.views(vote.getViews())
 			.voters(vote.getVoters())
 			.status(vote.isStatus())
-			.closeDate(vote.getCloseDate())
-			.createdAt(vote.getCreatedAt())
-			.updatedAt(vote.getModifiedAt())
+			.closeDate(TimeUtil.toTimeStampString(vote.getCloseDate()))
+			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
+			.updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))
 			.build();
 	}
 }

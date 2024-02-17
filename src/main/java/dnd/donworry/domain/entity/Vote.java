@@ -1,12 +1,22 @@
 package dnd.donworry.domain.entity;
 
-
-import dnd.donworry.domain.dto.vote.VoteRequestDto;
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 
+import dnd.donworry.domain.constants.Category;
+import dnd.donworry.domain.dto.vote.VoteRequestDto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -42,6 +52,10 @@ public class Vote extends BaseEntity {
 
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime closeDate;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Category category;
 
 	public static Vote toEntity(VoteRequestDto voteRequestDto, User user) {
 		return Vote.builder()

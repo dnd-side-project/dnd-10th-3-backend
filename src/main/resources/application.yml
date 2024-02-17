@@ -1,9 +1,11 @@
 spring:
   profiles:
-    active: dev
+    active: prod
     include:
       - s3
       - redis
+      - jwt
+      - kakao
 
 springdoc:
   packages-to-scan: dnd.donworry
