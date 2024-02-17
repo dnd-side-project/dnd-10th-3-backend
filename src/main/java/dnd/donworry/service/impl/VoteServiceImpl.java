@@ -19,6 +19,7 @@ import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
 import dnd.donworry.repository.OptionImageRepository;
 import dnd.donworry.repository.SelectionRepository;
+import dnd.donworry.repository.UserRepository;
 import dnd.donworry.repository.VoteRepository;
 import dnd.donworry.service.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,15 @@ public class VoteServiceImpl implements VoteService {
 	private final OptionImageRepository optionImageRepository;
 	private final VoteRepository voteRepository;
 	private final FileManager fileManager;
+	private final UserRepository userRepository;
 
 	@Override
-	public VoteResponseDto create(String username, VoteRequestDto voteRequestDto) {
+	public VoteResponseDto create(String nickname, VoteRequestDto voteRequestDto) {
 
 		if (voteRequestDto.getSelections().size() < 2) {
 			throw new CustomException(ErrorCode.SELECTION_SIZE_UNDER_TWO);
 		}
-
-		User user = new User(1L, "test", "test", ""); // 실제 유저로 변경
+		User user = userRepository.findByNickname(nickname);
 		Vote vote = voteRepository.save(Vote.toEntity(voteRequestDto, user));
 
 		List<SelectionResponseDto> selectionResponseDtos = saveSelections(voteRequestDto.getSelections(), vote);

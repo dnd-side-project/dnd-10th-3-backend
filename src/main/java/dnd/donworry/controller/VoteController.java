@@ -3,6 +3,7 @@ package dnd.donworry.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -15,6 +16,7 @@ import dnd.donworry.domain.dto.vote.VoteRequestDto;
 import dnd.donworry.domain.dto.vote.VoteResponseDto;
 import dnd.donworry.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -52,10 +54,10 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<VoteResponseDto> create(@RequestPart VoteRequestDto voteRequestDto,
-		@RequestPart @Nullable List<MultipartFile> images) {
-		String username = "test"; // Authentication.getName()으로 변경
+		@RequestPart @Nullable List<MultipartFile> images,
+		@Parameter(hidden = true) Authentication authentication) {
 		if (images != null)
 			voteRequestDto.mapImages(images);
-		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(username, voteRequestDto));
+		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(authentication.getName(), voteRequestDto));
 	}
 }
