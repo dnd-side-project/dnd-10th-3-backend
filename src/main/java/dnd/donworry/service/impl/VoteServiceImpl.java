@@ -35,12 +35,12 @@ public class VoteServiceImpl implements VoteService {
 	private final UserRepository userRepository;
 
 	@Override
-	public VoteResponseDto create(String nickname, VoteRequestDto voteRequestDto) {
+	public VoteResponseDto create(String email, VoteRequestDto voteRequestDto) {
 
 		if (voteRequestDto.getSelections().size() < 2) {
 			throw new CustomException(ErrorCode.SELECTION_SIZE_UNDER_TWO);
 		}
-		User user = userRepository.findByNickname(nickname);
+		User user = userRepository.findByEmail(email);
 		Vote vote = voteRepository.save(Vote.toEntity(voteRequestDto, user));
 
 		List<SelectionResponseDto> selectionResponseDtos = saveSelections(voteRequestDto.getSelections(), vote);
@@ -50,12 +50,12 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Override
-	public void delete(Long postId, String username) {
+	public void delete(Long postId, String email) {
 
 	}
 
 	@Override
-	public VoteResponseDto update(Long postId, String username) {
+	public VoteResponseDto update(Long postId, String email) {
 		return null;
 	}
 
@@ -65,7 +65,7 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Override
-	public VoteResponseDto findVote(Long postId, String username) {
+	public VoteResponseDto findVote(Long postId, String email) {
 		return null;
 	}
 

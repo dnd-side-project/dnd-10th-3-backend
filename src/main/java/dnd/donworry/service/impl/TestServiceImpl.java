@@ -25,10 +25,10 @@ public class TestServiceImpl implements TestService {
 
 	@Transactional
 	@Override
-	public TestResponseDto makeResult(String nickname, TestRequestDto testRequestDto) {
+	public TestResponseDto makeResult(String email, TestRequestDto testRequestDto) {
 		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		if (nickname != null)
-			save(nickname, testReponseDto);
+		if (email != null)
+			save(email, testReponseDto);
 		return testReponseDto;
 	}
 
@@ -40,7 +40,7 @@ public class TestServiceImpl implements TestService {
 
 	@Transactional
 	public void save(String nickname, TestResponseDto testResponseDto) {
-		User user = userRepository.findByNickname(nickname);
+		User user = userRepository.findByEmail(nickname);
 		testResultRepository.save(TestResult.toEntity(user, testResponseDto));
 	}
 

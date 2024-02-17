@@ -12,10 +12,10 @@ import dnd.donworry.repository.custom.UserRepositoryCustom;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
-	public User findbyNickname(String nickname) {
+	public User findByEmail(String email) {
 		return Optional.ofNullable(
 				selectFrom(user)
-					.where(user.nickname.eq(nickname))
+					.where(user.email.eq(email))
 					.fetchOne())
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
 			);
