@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import dnd.donworry.domain.constants.PreQuestion_AGE;
 import dnd.donworry.domain.constants.PreQuestion_Gender;
 import dnd.donworry.domain.entity.TestResult;
+import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,8 +44,8 @@ public class TestResponseDto {
 	@Schema(description = "이미지 URL", example = "https://s3.ap-northeast-2.amazonaws.com/donworry/1.png")
 	private String imageUrl;
 
-	@Schema(description = "생성일", example = "2021-07-01T00:00:00")
-	private LocalDateTime createdAt;
+	@Schema(description = "생성일", example = "")
+	private String createdAt;
 
 	public static TestResponseDto of(TestResult testResult) {
 		return TestResponseDto.builder()
@@ -56,7 +57,7 @@ public class TestResponseDto {
 			.talk(testResult.getTalk())
 			.temperature(testResult.getTemperature())
 			.imageUrl(testResult.getImageUrl())
-			.createdAt(testResult.getCreatedAt())
+			.createdAt(TimeUtil.toTimeStampString(testResult.getCreatedAt()))
 			.build();
 	}
 
@@ -70,7 +71,7 @@ public class TestResponseDto {
 			.talk(testRequestDto.getTalk())
 			.temperature(temperature)
 			.imageUrl(imageUrl)
-			.createdAt(LocalDateTime.now())
+			.createdAt(TimeUtil.toTimeStampString(LocalDateTime.now()))
 			.build();
 	}
 }
