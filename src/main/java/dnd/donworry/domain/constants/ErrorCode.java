@@ -49,14 +49,14 @@ public enum ErrorCode {
 	UNEXPECTED_EXCEPTION("500", "예상치 못한 에러가 발생하였습니다."),
 	SELECTION_SIZE_UNDER_TWO("400", "선택지는 최소 2개 이상이어야 합니다."),
 
-
 	/* COMMENT */
 	COMMENT_NOT_FOUNT("404", "댓글이 존재하지 않습니다."),
 	COMMENT_NOT_MATCH("403", "댓글 작성자와 수정자가 일치하지 않습니다."),
 
 	AGE_NOT_FOUND("400", "나이 정보가 존재하지 않습니다."),
-	GENDER_NOT_FOUND("400", "성별 정보가 존재하지 않습니다.");
-
+	GENDER_NOT_FOUND("400", "성별 정보가 존재하지 않습니다."),
+	MEMBER_MISSMATCH("403", "회원 정보가 일치하지 않습니다."),
+	;
 
 	private final String code;
 	private final String message;

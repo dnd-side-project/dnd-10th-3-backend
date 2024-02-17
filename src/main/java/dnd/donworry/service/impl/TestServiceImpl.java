@@ -33,9 +33,13 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public TestResponseDto findResult(Long testResultId) {
-		return testResultRepository.findById(testResultId).map(TestResponseDto::of).orElseThrow(
-			() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
+	public TestResponseDto findResult(String email, Long testResultId) {
+		User user = userRepository.findByEmail(email);
+		if (!user.getEmail().equals(email)) {
+			throw new CustomException(ErrorCode.MEMBER_MISSMATCH);
+		}
+		return testResultRepository.findById(testResultId).map(TestResponseDto::of)
+			.orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 	}
 
 	@Transactional
