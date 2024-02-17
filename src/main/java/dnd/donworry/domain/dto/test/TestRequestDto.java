@@ -1,7 +1,5 @@
 package dnd.donworry.domain.dto.test;
 
-import dnd.donworry.domain.constants.PreQuestion_AGE;
-import dnd.donworry.domain.constants.PreQuestion_Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class TestRequestDto {
 
 	@Schema(description = "상대방 나이", example = "20대")
-	private PreQuestion_AGE age;
+	private String age;
 
 	@Schema(description = "상대방 성별", example = "남자")
-	private PreQuestion_Gender gender;
+	private String gender;
 
 	@Schema(description = "상대방 닉네임", example = "JooHyun")
 	private String buddy;

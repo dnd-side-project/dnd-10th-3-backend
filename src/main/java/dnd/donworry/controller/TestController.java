@@ -51,7 +51,7 @@ public class TestController {
 		return ResponseCode.TEST_SUCCESS.toResponse(null);
 	}
 
-	@PostMapping
+	@PostMapping("/result")
 	@Operation(summary = "테스트 결과 생성", description = "일반적인 테스트 진행 후 결과를 생성합니다. 비회원인 경우 백그라운드에 저장되며 회원가입 시 저장된 결과를 불러옵니다. 회원인 경우에는 바로 결과가 저장됩니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "테스트 결과 생성 성공"),
@@ -64,7 +64,9 @@ public class TestController {
 	})
 	public ResResult<TestResponseDto> makeResult(@RequestBody TestRequestDto testRequestDto,
 		@Parameter(hidden = true) Authentication authentication) {
-		return ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(authentication.getName(), testRequestDto));
+		return authentication == null
+			? ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(null, testRequestDto))
+			: ResponseCode.TEST_SUCCESS.toResponse(testService.makeResult(authentication.getName(), testRequestDto));
 	}
 
 	@GetMapping("/result/{resultId}")
