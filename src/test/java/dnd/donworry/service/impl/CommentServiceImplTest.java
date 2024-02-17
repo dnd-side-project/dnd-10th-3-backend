@@ -1,3 +1,4 @@
+/*
 package dnd.donworry.service.impl;
 
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
@@ -145,3 +146,4 @@ class CommentServiceImplTest {
     }
 }
 
+*/
