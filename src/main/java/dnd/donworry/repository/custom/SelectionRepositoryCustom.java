@@ -7,4 +7,8 @@ import dnd.donworry.domain.entity.Selection;
 public interface SelectionRepositoryCustom {
 
 	List<Selection> findByVoteId(Long voteId);
+
+	Selection findByIdCustom(Long selectionId);
+
+	void deleteAllByVoteId(Long voteId);
 }

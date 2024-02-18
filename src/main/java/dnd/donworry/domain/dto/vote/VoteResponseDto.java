@@ -59,7 +59,10 @@ public class VoteResponseDto {
 	@Schema(description = "수정일", example = "")
 	private String updatedAt;
 
-	public static VoteResponseDto of(Vote vote, List<SelectionResponseDto> selections) {
+	@Schema(description = "선택한 선택지 ID", example = "1")
+	private Long selected;
+
+	public static VoteResponseDto of(Vote vote, List<SelectionResponseDto> selections, Long selectedId) {
 		return VoteResponseDto.builder()
 			.id(vote.getId())
 			.user(vote.getUser())
@@ -70,6 +73,7 @@ public class VoteResponseDto {
 			.views(vote.getViews())
 			.voters(vote.getVoters())
 			.status(vote.isStatus())
+			.selected(selectedId)
 			.category(vote.getCategory().getName())
 			.closeDate(vote.getCloseDate())
 			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))

@@ -18,8 +18,10 @@ import dnd.donworry.domain.entity.Selection;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
+import dnd.donworry.repository.OptionImageRepository;
 import dnd.donworry.repository.SelectionRepository;
 import dnd.donworry.repository.UserRepository;
+import dnd.donworry.repository.UserVoteRepository;
 import dnd.donworry.repository.VoteRepository;
 import dnd.donworry.service.VoteService;
 import jakarta.transaction.Transactional;
@@ -33,6 +35,8 @@ public class VoteServiceImpl implements VoteService {
 	private final VoteRepository voteRepository;
 	private final FileManager fileManager;
 	private final UserRepository userRepository;
+	private final UserVoteRepository userVoteRepository;
+	private final OptionImageRepository optionImageRepository;
 
 	@Override
 	@Transactional
@@ -47,7 +51,7 @@ public class VoteServiceImpl implements VoteService {
 		List<SelectionResponseDto> selectionResponseDtos = saveSelections(voteRequestDto.getSelections(), vote);
 		setVotePercentage(selectionResponseDtos, vote.getVoters());
 
-		return VoteResponseDto.of(vote, selectionResponseDtos);
+		return VoteResponseDto.of(vote, selectionResponseDtos, null);
 	}
 
 	@Override
@@ -57,6 +61,8 @@ public class VoteServiceImpl implements VoteService {
 		if (!vote.getUser().getEmail().equals(email)) {
 			throw new CustomException(ErrorCode.NOT_AUTHORIZED_TOKEN);
 		}
+		optionImageRepository.deleteAllByVoteId(voteId);
+		selectionRepository.deleteAllByVoteId(voteId);
 		voteRepository.delete(vote);
 	}
 
@@ -71,17 +77,31 @@ public class VoteServiceImpl implements VoteService {
 		}
 
 		vote.update(voteUpdateDto);
-		return VoteResponseDto.of(vote, findSelections(vote.getId()));
+		return VoteResponseDto.of(vote, findSelections(vote.getId()), findUserSelectionForVote(email, vote.getId()));
 	}
 
 	@Override
-	public List<VoteResponseDto> findAllVotes() {
-		return voteRepository.findAll().stream().map(v -> VoteResponseDto.of(v, findSelections(v.getId()))).toList();
+	public List<VoteResponseDto> findAllVotes(String email) {
+		return voteRepository.findAll()
+			.stream()
+			.map(v -> VoteResponseDto.of(
+				v,
+				findSelections(v.getId()),
+				email == null
+					? null
+					: findUserSelectionForVote(email, v.getId())))
+			.toList();
 	}
 
 	@Override
-	public VoteResponseDto findMyVote(String email) {
-		return null;
+	public List<VoteResponseDto> findMyVotes(String email) {
+		return voteRepository.findMyVotes(email)
+			.stream()
+			.map(v -> VoteResponseDto.of(
+				v,
+				findSelections(v.getId()),
+				findUserSelectionForVote(email, v.getId())))
+			.toList();
 	}
 
 	@Transactional
@@ -125,5 +145,9 @@ public class VoteServiceImpl implements VoteService {
 
 	private List<SelectionResponseDto> findSelections(Long voteId) {
 		return selectionRepository.findByVoteId(voteId).stream().map(SelectionResponseDto::of).toList();
+	}
+
+	private Long findUserSelectionForVote(String email, Long voteId) {
+		return userVoteRepository.findUserSelectionForVote(email, voteId);
 	}
 }

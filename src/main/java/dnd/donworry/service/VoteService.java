@@ -14,8 +14,8 @@ public interface VoteService {
 
 	VoteResponseDto update(VoteUpdateDto voteUpdateDto, String email);
 
-	List<VoteResponseDto> findAllVotes();
+	List<VoteResponseDto> findAllVotes(String email);
 
-	VoteResponseDto findMyVote(String username);
+	List<VoteResponseDto> findMyVotes(String email);
 
 }
