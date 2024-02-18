@@ -56,7 +56,7 @@ public enum ErrorCode {
 	AGE_NOT_FOUND("400", "나이 정보가 존재하지 않습니다."),
 	GENDER_NOT_FOUND("400", "성별 정보가 존재하지 않습니다."),
 	MEMBER_MISSMATCH("403", "회원 정보가 일치하지 않습니다."),
-	;
+	SELECTION_NOT_FOUND("404", "해당 선택지가 존재하지 않습니다.");
 
 	private final String code;
 	private final String message;

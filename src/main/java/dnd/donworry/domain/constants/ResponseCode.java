@@ -45,6 +45,7 @@ public enum ResponseCode {
 	/* SEARCH */
 	SEARCH_SUCCESS("200", "검색에 성공했습니다."),
 	VOTE_FOUND("200", "투표 조회에 성공했습니다."),
+	USER_VOTE_ATTEND("200", "유저 투표에 성공했습니다."),
 	;
 
 	private final String code;
