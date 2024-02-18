@@ -1,5 +1,6 @@
 package dnd.donworry.domain.dto.vote;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
@@ -50,7 +51,7 @@ public class VoteResponseDto {
 	private String category;
 
 	@Schema(description = "투표 마감일", example = "2021-08-01T00:00:00")
-	private String closeDate;
+	private LocalDate closeDate;
 
 	@Schema(description = "생성일", example = "")
 	private String createdAt;
@@ -70,7 +71,7 @@ public class VoteResponseDto {
 			.voters(vote.getVoters())
 			.status(vote.isStatus())
 			.category(vote.getCategory().getName())
-			.closeDate(TimeUtil.toTimeStampString(vote.getCloseDate()))
+			.closeDate(vote.getCloseDate())
 			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
 			.updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))
 			.build();
