@@ -29,4 +29,11 @@ public class SelectionRepositoryImpl extends Querydsl4RepositorySupport implemen
 			.where(selection.id.eq(selectionId))
 			.fetchOne()).orElseThrow(() -> new CustomException(ErrorCode.SELECTION_NOT_FOUND));
 	}
+
+	@Override
+	public void deleteAllByVoteId(Long voteId) {
+		delete(selection)
+			.where(selection.vote.id.eq(voteId))
+			.execute();
+	}
 }

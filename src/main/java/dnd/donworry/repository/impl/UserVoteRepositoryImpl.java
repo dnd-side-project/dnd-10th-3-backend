@@ -22,4 +22,14 @@ public class UserVoteRepositoryImpl extends Querydsl4RepositorySupport implement
 				).fetchOne()
 		);
 	}
+
+	@Override
+	public Long findUserSelectionForVote(String email, Long voteId) {
+		return selectFrom(userVote)
+			.where(userVote.selection.vote.id.eq(voteId)
+				.and(userVote.user.email.eq(email))
+			)
+			.select(userVote.selection.id)
+			.fetchOne();
+	}
 }

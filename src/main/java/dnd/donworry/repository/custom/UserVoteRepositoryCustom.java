@@ -7,4 +7,6 @@ import dnd.donworry.domain.entity.UserVote;
 public interface UserVoteRepositoryCustom {
 
 	Optional<UserVote> findUserVoteByEmailAndVoteId(String email, Long voteId);
+
+	Long findUserSelectionForVote(String email, Long voteId);
 }

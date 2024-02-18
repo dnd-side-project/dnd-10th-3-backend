@@ -101,7 +101,25 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<List<VoteResponseDto>> findAllVotes() {
-		return ResponseCode.VOTE_FOUND.toResponse(voteService.findAllVotes());
+	public ResResult<List<VoteResponseDto>> findAllVotes(
+		@Parameter(hidden = true) Authentication authentication) {
+		return ResponseCode.VOTE_FOUND.toResponse(
+			voteService.findAllVotes(authentication != null ? authentication.getName() : null));
+	}
+
+	@GetMapping("/mine")
+	@Operation(summary = "내 투표 조회", description = "내가 생성한 투표를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "투표 조회 성공"),
+		@ApiResponse(responseCode = "400", description = "투표 조회 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"400\", \n \"message\": \"투표 조회에 실패했습니다.\"\n}"))),
+		@ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
+	})
+	public ResResult<List<VoteResponseDto>> findMyVotes(
+		@Parameter(hidden = true) Authentication authentication) {
+		return ResponseCode.VOTE_FOUND.toResponse(voteService.findMyVotes(authentication.getName()));
 	}
 }
