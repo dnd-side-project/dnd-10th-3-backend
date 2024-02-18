@@ -1,6 +1,6 @@
 package dnd.donworry.domain.dto.vote;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +32,8 @@ public class VoteRequestDto {
 	@Schema(description = "투표 선택지")
 	private List<SelectionRequestDto> selections;
 
-	@Schema(description = "투표 시작일", example = "2021-08-01T00:00:00")
-	private LocalDateTime closeDate;
+	@Schema(description = "투표 시작일", example = "2021-08-01")
+	private LocalDate closeDate;
 
 	@Schema(description = "카테고리", example = "축의금")
 	private String category;

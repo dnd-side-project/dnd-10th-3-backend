@@ -1,6 +1,6 @@
 package dnd.donworry.domain.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import dnd.donworry.domain.constants.Category;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
@@ -52,7 +52,7 @@ public class Vote extends BaseEntity {
 	private boolean status = false;
 
 	@Column(nullable = false, updatable = false)
-	private LocalDateTime closeDate;
+	private LocalDate closeDate;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
