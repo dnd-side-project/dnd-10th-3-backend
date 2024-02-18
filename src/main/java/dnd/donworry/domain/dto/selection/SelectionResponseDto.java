@@ -33,19 +33,9 @@ public class SelectionResponseDto {
 	private int votePercentage;
 
 	public static SelectionResponseDto of(Selection selection) {
-		if (selection.getOptionImage() != null) {
-			return ofImage(selection);
-		}
 		return SelectionResponseDto.builder()
 			.id(selection.getId())
 			.content(selection.getContent())
-			.count(selection.getCount())
-			.build();
-	}
-
-	public static SelectionResponseDto ofImage(Selection selection) {
-		return SelectionResponseDto.builder()
-			.id(selection.getId())
 			.count(selection.getCount())
 			.imagePath(selection.getOptionImage().getPath())
 			.build();
