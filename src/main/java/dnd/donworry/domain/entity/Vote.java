@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import dnd.donworry.domain.constants.Category;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
+import dnd.donworry.domain.dto.vote.VoteUpdateDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -63,7 +64,13 @@ public class Vote extends BaseEntity {
 			.title(voteRequestDto.getTitle())
 			.content(voteRequestDto.getContent())
 			.closeDate(voteRequestDto.getCloseDate())
+			.category(Category.of(voteRequestDto.getCategory()))
 			.build();
 	}
 
+	public void update(VoteUpdateDto voteUpdateDto) {
+		this.title = voteUpdateDto.getTitle();
+		this.content = voteUpdateDto.getContent();
+		this.category = Category.of(voteUpdateDto.getCategory());
+	}
 }

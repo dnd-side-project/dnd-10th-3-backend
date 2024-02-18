@@ -26,7 +26,7 @@ public enum ResponseCode {
 	MEMBER_EXISTS("200", "회원존재 여부 조회에 성공했습니다."),
 	AVATAR_UPLOAD("200", "이미지 업로드에 성공했습니다."),
 	AVATAR_DELETE("200", "이미지 삭제에 성공했습니다."),
-  NICKNAME_UPDATE("200", "닉네임 변경에 성공했습니다."),
+	NICKNAME_UPDATE("200", "닉네임 변경에 성공했습니다."),
 
 	/* VOTE */
 	VOTE_CREATED("200", "투표 생성에 성공했습니다."),
@@ -43,7 +43,9 @@ public enum ResponseCode {
 	LIKES_CANCEL("200", "좋아요 취소에 성공했습니다."),
 
 	/* SEARCH */
-	SEARCH_SUCCESS("200", "검색에 성공했습니다.");
+	SEARCH_SUCCESS("200", "검색에 성공했습니다."),
+	VOTE_FOUND("200", "투표 조회에 성공했습니다."),
+	;
 
 	private final String code;
 

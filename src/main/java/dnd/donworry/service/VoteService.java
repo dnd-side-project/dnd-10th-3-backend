@@ -4,6 +4,7 @@ import java.util.List;
 
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
 import dnd.donworry.domain.dto.vote.VoteResponseDto;
+import dnd.donworry.domain.dto.vote.VoteUpdateDto;
 
 public interface VoteService {
 
@@ -11,10 +12,10 @@ public interface VoteService {
 
 	void delete(Long postId, String username);
 
-	VoteResponseDto update(Long postId, String username);
+	VoteResponseDto update(VoteUpdateDto voteUpdateDto, String email);
 
-	List<VoteResponseDto> findAllVotes(Long postId);
+	List<VoteResponseDto> findAllVotes();
 
-	VoteResponseDto findVote(Long postId, String username);
+	VoteResponseDto findMyVote(String username);
 
 }

@@ -3,6 +3,7 @@ package dnd.donworry.domain.dto.selection;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -18,5 +19,6 @@ public class SelectionRequestDto {
 	private String content;
 
 	@Schema(description = "선택지 이미지", hidden = true)
+	@Null
 	private MultipartFile image;
 }

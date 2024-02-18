@@ -2,7 +2,6 @@ package dnd.donworry.domain.dto.vote;
 
 import java.util.List;
 
-import dnd.donworry.domain.constants.Category;
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.Vote;
@@ -48,7 +47,7 @@ public class VoteResponseDto {
 	private boolean status;
 
 	@Schema(description = "카테고리", example = "축의금")
-	private Category category;
+	private String category;
 
 	@Schema(description = "투표 마감일", example = "2021-08-01T00:00:00")
 	private String closeDate;
@@ -70,6 +69,7 @@ public class VoteResponseDto {
 			.views(vote.getViews())
 			.voters(vote.getVoters())
 			.status(vote.isStatus())
+			.category(vote.getCategory().getName())
 			.closeDate(TimeUtil.toTimeStampString(vote.getCloseDate()))
 			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
 			.updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))

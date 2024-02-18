@@ -1,6 +1,5 @@
 package dnd.donworry.domain.entity;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 @Entity
 @Getter
@@ -48,15 +46,9 @@ public class Selection {
 			.build();
 	}
 
-	public static Selection toEntity(Vote vote) {
-		return Selection.builder()
-			.vote(vote)
-			.build();
-	}
-
-	public void setOptionImage(OptionImage optionImage) {
+	public Selection setOptionImage(OptionImage optionImage) {
 		this.optionImage = optionImage;
+		return this;
 	}
-
 
 }
