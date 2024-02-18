@@ -18,7 +18,6 @@ import dnd.donworry.domain.entity.Selection;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
-import dnd.donworry.repository.OptionImageRepository;
 import dnd.donworry.repository.SelectionRepository;
 import dnd.donworry.repository.UserRepository;
 import dnd.donworry.repository.VoteRepository;
@@ -31,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class VoteServiceImpl implements VoteService {
 
 	private final SelectionRepository selectionRepository;
-	private final OptionImageRepository optionImageRepository;
 	private final VoteRepository voteRepository;
 	private final FileManager fileManager;
 	private final UserRepository userRepository;
@@ -65,9 +63,9 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	@Transactional
 	public VoteResponseDto update(VoteUpdateDto voteUpdateDto, String email) {
-
 		Vote vote = voteRepository.findById(voteUpdateDto.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
+
 		if (!vote.getUser().getEmail().equals(email)) {
 			throw new CustomException(ErrorCode.NOT_AUTHORIZED_TOKEN);
 		}
@@ -117,7 +115,7 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Transactional
-	private Selection createSelectionWithoutImage(SelectionRequestDto selectionRequestDto, Vote vote) {
+	protected Selection createSelectionWithoutImage(SelectionRequestDto selectionRequestDto, Vote vote) {
 		return Selection.toEntity(selectionRequestDto.getContent(), vote);
 	}
 
