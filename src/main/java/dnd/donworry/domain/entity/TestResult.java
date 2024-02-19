@@ -2,6 +2,7 @@ package dnd.donworry.domain.entity;
 
 import dnd.donworry.domain.constants.PreQuestion_AGE;
 import dnd.donworry.domain.constants.PreQuestion_Gender;
+import dnd.donworry.domain.constants.RANK;
 import dnd.donworry.domain.dto.test.TestResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +65,7 @@ public class TestResult extends BaseEntity {
 			.trust(testResponseDto.getTrust())
 			.love(testResponseDto.getLove())
 			.talk(testResponseDto.getTalk())
-			.temperature(testResponseDto.getTemperature())
+			.temperature(RANK.of(testResponseDto.getTemperature()).getLevel())
 			.imageUrl(testResponseDto.getImageUrl())
 			.build();
 	}
