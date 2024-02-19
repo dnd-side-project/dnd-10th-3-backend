@@ -19,8 +19,7 @@ public class TestManager {
 
 	public TestResponseDto makeResult(TestRequestDto testRequestDto) {
 		int temperature = calculateTemperature(testRequestDto);
-		String imageUrl = makeImageUrl(temperature);
-		return TestResponseDto.of(testRequestDto, temperature, imageUrl);
+		return TestResponseDto.of(testRequestDto, temperature);
 	}
 
 	// 리팩토링 필요 (상수 -> 변수)
