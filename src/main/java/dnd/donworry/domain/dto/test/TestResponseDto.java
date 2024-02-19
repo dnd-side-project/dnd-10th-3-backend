@@ -2,6 +2,8 @@ package dnd.donworry.domain.dto.test;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import dnd.donworry.domain.entity.TestResult;
 import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Schema(name = "테스트 결과 API Response")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestResponseDto {
+
+	@Schema(description = "테스트 ID", example = "1")
+	private Long id;
 
 	@Schema(description = "상대방 나이", example = "20대")
 	private String age;
@@ -47,6 +53,7 @@ public class TestResponseDto {
 
 	public static TestResponseDto of(TestResult testResult) {
 		return TestResponseDto.builder()
+			.id(testResult.getId())
 			.age(testResult.getAge().name())
 			.gender(testResult.getGender().name())
 			.buddy(testResult.getBuddy())

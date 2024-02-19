@@ -29,15 +29,13 @@ public class TestServiceImpl implements TestService {
 	@Override
 	public TestResponseDto makeResultWithUser(String email, TestRequestDto testRequestDto) {
 		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		save(email, testReponseDto);
-		return testReponseDto;
+		return save(email, testReponseDto);
 	}
 
 	@Transactional
 	@Override
 	public TestResponseDto makeResultWithOutUser(TestRequestDto testRequestDto) {
-		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		return testReponseDto;
+		return testManager.makeResult(testRequestDto);
 	}
 
 	@Override
@@ -51,9 +49,9 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Transactional
-	public void save(String nickname, TestResponseDto testResponseDto) {
+	public TestResponseDto save(String nickname, TestResponseDto testResponseDto) {
 		User user = userRepository.findByEmailCustom(nickname);
-		testResultRepository.save(TestResult.toEntity(user, testResponseDto));
+		return TestResponseDto.of(testResultRepository.save(TestResult.toEntity(user, testResponseDto)));
 	}
 
 }
