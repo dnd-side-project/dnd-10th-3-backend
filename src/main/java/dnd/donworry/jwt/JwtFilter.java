@@ -35,12 +35,12 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        handleTokens(
-                resolveTokenFromCookie(request, ACCESS_TOKEN_HEADER),
-                resolveTokenFromCookie(request, REFRESH_TOKEN_HEADER),
-                request, response);
+            handleTokens(
+                    resolveTokenFromCookie(request, ACCESS_TOKEN_HEADER),
+                    resolveTokenFromCookie(request, REFRESH_TOKEN_HEADER),
+                    request, response);
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
     }
 
     private void handleTokens(String accessToken, String refreshToken, HttpServletRequest request,
