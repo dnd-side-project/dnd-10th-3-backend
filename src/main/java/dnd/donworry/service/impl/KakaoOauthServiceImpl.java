@@ -69,7 +69,7 @@ public class KakaoOauthServiceImpl implements KakaoOauthService {
             oAuthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
         } catch (JsonMappingException e) {
             e.printStackTrace();
-            ;
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
