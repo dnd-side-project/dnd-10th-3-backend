@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,8 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Slf4j
 @EnableWebSecurity
@@ -53,7 +50,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/login/oauth2/code/kakao/**", "/index.html", "swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers("/login/oauth2/code/kakao/**",  "swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -67,7 +64,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
@@ -85,7 +82,6 @@ public class SecurityConfig {
                 web.ignoring()
                         .requestMatchers("/login/oauth2/code/kakao/**")
                         .requestMatchers("/v3/api-docs/**")
-                        .requestMatchers(HttpMethod.GET, "/index.html")
                         .requestMatchers("/swagger-resources/**")
                         .requestMatchers("/swagger-ui/**")
                         .requestMatchers("/webjars/**")
