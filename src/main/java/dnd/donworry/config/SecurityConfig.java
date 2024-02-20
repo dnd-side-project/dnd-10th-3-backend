@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/login/oauth2/code/kakao", "/", "/index.html", "swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers("/login/oauth2/code/kakao/**", "/", "/index.html", "swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -81,6 +81,7 @@ public class SecurityConfig {
         // 아래 url은 filter 에서 제외
         return web ->
                 web.ignoring()
+                        .requestMatchers("/login/oauth2/code/kakao/**")
                         .requestMatchers("/v3/api-docs/**")
                         .requestMatchers(HttpMethod.GET, "/", "/index.html")
                         .requestMatchers("/swagger-resources/**")
