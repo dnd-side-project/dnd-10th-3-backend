@@ -52,8 +52,8 @@ public class OauthServiceImpl implements OauthService {
 		refreshToken.ifPresent(refreshTokenRepository::delete);
 		refreshTokenRepository.save(
 			new RefreshToken(tokenDto.getRefreshToken(), email, jwtProvider.getRefreshTokenExpiredTime()));
-		cookieUtil.setCookie(response, REFRESH_TOKEN, tokenDto.getRefreshToken());
-		cookieUtil.setCookie(response, ACCESS_TOKEN, tokenDto.getAccessToken());
+		cookieUtil.setCookie(response, REFRESH_TOKEN, tokenDto.getRefreshToken(),jwtProvider.getRefreshTokenExpiredTime());
+		cookieUtil.setCookie(response, ACCESS_TOKEN, tokenDto.getAccessToken(), jwtProvider.getAccessTokenExpiredTime());
 	}
 
 	@Transactional
