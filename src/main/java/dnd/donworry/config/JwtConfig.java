@@ -19,7 +19,7 @@ public class JwtConfig {
     @Value("${jwt.token.secretKey}")
     private String secretKey;
     @Value("${jwt.access.token.expiration.seconds}")
-    private Long accessExpirationTime;
+    private Long accessExpirationTime;  //2시간
     @Value("${jwt.refresh.token.expiration.seconds}")
-    private Long refreshExpirationTime;
+    private Long refreshExpirationTime; //2주
 }
