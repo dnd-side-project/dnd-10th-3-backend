@@ -37,6 +37,8 @@ public class KakaoOauthServiceImpl implements KakaoOauthService {
     @Value("${kakao.redirectUri}")
     private String redirectUri;
 
+    @Value("${kakao.secretKey}")
+    private String secretKey;
     public UserDto login(String code) {
         String kakaoAccessToken = getKakaoAccessToken(code);
         return getUserProfileToken(kakaoAccessToken);
@@ -53,6 +55,7 @@ public class KakaoOauthServiceImpl implements KakaoOauthService {
         params.add("client_id", clientId);
         params.add("redirect_uri", redirectUri);
         params.add("code", code);
+        params.add("client_secret", secretKey);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
 
