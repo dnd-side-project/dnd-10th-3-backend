@@ -1,14 +1,16 @@
 package dnd.donworry.service;
 
+import java.util.List;
+
 import dnd.donworry.domain.dto.test.TestRequestDto;
 import dnd.donworry.domain.dto.test.TestResponseDto;
 
 public interface TestService {
-	TestResponseDto save(String username, TestResponseDto testResponseDto);
+	TestResponseDto saveResult(String email, TestRequestDto testRequestDto);
 
-	TestResponseDto makeResultWithUser(String username, TestRequestDto testRequestDto);
+	List<TestResponseDto> findMyResults(String email, Long testResultId);
 
-	TestResponseDto makeResultWithOutUser(TestRequestDto testRequestDto);
+	TestResponseDto findResult(Long testResultId);
 
-	TestResponseDto findResult(String email, Long testResultId);
+	void saveBackground(String email, TestResponseDto testResponseDto);
 }

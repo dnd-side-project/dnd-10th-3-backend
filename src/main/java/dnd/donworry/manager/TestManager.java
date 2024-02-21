@@ -1,25 +1,33 @@
 package dnd.donworry.manager;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
+import dnd.donworry.domain.constants.RANK;
 import dnd.donworry.domain.dto.test.TestRequestDto;
-import dnd.donworry.domain.dto.test.TestResponseDto;
+import dnd.donworry.domain.entity.TestResult;
+import dnd.donworry.repository.TestResultRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class TestManager {
 
 	public static final String LOW = "low";
 	public static final String MID = "mid";
 	public static final String HIGH = "high";
-
 	public static final int LOW_TEMPERATURE = 1;
 	public static final int MID_TEMPERATURE = 2;
 	public static final int HIGH_TEMPERATURE = 3;
 	public static final int HIGHEST_TEMPERATURE = 4;
+	private final TestResultRepository testResultRepository;
 
-	public TestResponseDto makeResult(TestRequestDto testRequestDto) {
-		int temperature = calculateTemperature(testRequestDto);
-		return TestResponseDto.of(testRequestDto, temperature);
+	public TestResult makeResult(TestRequestDto testRequestDto) {
+		log.info(Arrays.toString(testRequestDto.factorList()));
+		return TestResult.toEntity(null, testRequestDto, RANK.findByTemperature(calculateTemperature(testRequestDto)));
 	}
 
 	// 리팩토링 필요 (상수 -> 변수)

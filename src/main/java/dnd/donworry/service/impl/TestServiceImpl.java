@@ -1,5 +1,7 @@
 package dnd.donworry.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import dnd.donworry.domain.constants.ErrorCode;
@@ -26,32 +28,36 @@ public class TestServiceImpl implements TestService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	@Override
-	public TestResponseDto makeResultWithUser(String email, TestRequestDto testRequestDto) {
-		TestResponseDto testReponseDto = testManager.makeResult(testRequestDto);
-		return save(email, testReponseDto);
+	public TestResponseDto saveResult(String email, TestRequestDto testRequestDto) {
+		TestResult testResult = testManager.makeResult(testRequestDto);
+		if (email != null) {
+			User user = userRepository.findByEmailCustom(email);
+			testResult.setUser(user);
+		}
+		return TestResponseDto.of(testResultRepository.save(testResult));
 	}
 
-	@Transactional
-	@Override
-	public TestResponseDto makeResultWithOutUser(TestRequestDto testRequestDto) {
-		return testManager.makeResult(testRequestDto);
-	}
-
-	@Override
-	public TestResponseDto findResult(String email, Long testResultId) {
+	public List<TestResponseDto> findMyResults(String email, Long testResultId) {
 		User user = userRepository.findByEmailCustom(email);
 		if (!user.getEmail().equals(email)) {
 			throw new CustomException(ErrorCode.MEMBER_MISSMATCH);
 		}
+		return testResultRepository.findById(testResultId).map(TestResponseDto::of).stream().toList();
+	}
+
+	public TestResponseDto findResult(Long testResultId) {
 		return testResultRepository.findById(testResultId).map(TestResponseDto::of)
 			.orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 	}
 
-	@Transactional
-	public TestResponseDto save(String nickname, TestResponseDto testResponseDto) {
-		User user = userRepository.findByEmailCustom(nickname);
-		return TestResponseDto.of(testResultRepository.save(TestResult.toEntity(user, testResponseDto)));
+	@Override
+	public void saveBackground(String email, TestResponseDto testResponseDto) {
+		TestResult testResult = testResultRepository.findById(testResponseDto.getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
+
+		testResult.setUser(userRepository.findByEmailCustom(email));
+
+		testResultRepository.save(testResult);
 	}
 
 }
