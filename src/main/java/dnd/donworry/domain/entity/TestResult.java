@@ -3,7 +3,7 @@ package dnd.donworry.domain.entity;
 import dnd.donworry.domain.constants.PreQuestion_AGE;
 import dnd.donworry.domain.constants.PreQuestion_Gender;
 import dnd.donworry.domain.constants.RANK;
-import dnd.donworry.domain.dto.test.TestResponseDto;
+import dnd.donworry.domain.dto.test.TestRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
@@ -27,6 +28,7 @@ public class TestResult extends BaseEntity {
 	@GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
 	private Long id;
 
+	@Setter
 	@ManyToOne
 	private User user;
 
@@ -46,9 +48,6 @@ public class TestResult extends BaseEntity {
 	private int temperature;
 
 	@Column(nullable = false)
-	private String imageUrl;
-
-	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PreQuestion_AGE age;
 
@@ -56,17 +55,24 @@ public class TestResult extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private PreQuestion_Gender gender;
 
-	public static TestResult toEntity(User user, TestResponseDto testResponseDto) {
+	@Column(nullable = false)
+	private String description;
+
+	@Column(nullable = false)
+	private String title;
+
+	public static TestResult toEntity(User user, TestRequestDto testRequestDto, RANK rank) {
 		return TestResult.builder()
-			.age(PreQuestion_AGE.of(testResponseDto.getAge()))
-			.gender(PreQuestion_Gender.of(testResponseDto.getGender()))
+			.age(PreQuestion_AGE.of(testRequestDto.getAge()))
+			.gender(PreQuestion_Gender.of(testRequestDto.getGender()))
 			.user(user)
-			.buddy(testResponseDto.getBuddy())
-			.trust(testResponseDto.getTrust())
-			.love(testResponseDto.getLove())
-			.talk(testResponseDto.getTalk())
-			.temperature(RANK.of(testResponseDto.getTemperature()).getLevel())
-			.imageUrl(testResponseDto.getImageUrl())
+			.buddy(testRequestDto.getBuddy())
+			.trust(testRequestDto.getTrust())
+			.love(testRequestDto.getLove())
+			.talk(testRequestDto.getTalk())
+			.temperature(rank.getTemperature())
+			.description(rank.getDescription())
+			.title(rank.getTitle())
 			.build();
 	}
 

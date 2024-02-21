@@ -1,6 +1,5 @@
 package dnd.donworry.domain.constants;
 
-import dnd.donworry.domain.dto.test.TestResponseDto;
 import dnd.donworry.exception.CustomException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -67,15 +66,6 @@ public enum RANK {
 			}
 		}
 		throw new CustomException(ErrorCode.RANK_NOT_FOUND);
-	}
-
-	public static TestResponseDto toTestResponseDto(TestResponseDto testResponseDto, int temperature) {
-		RANK rank = findByTemperature(temperature);
-		testResponseDto.setTemperature(rank.getTemperature());
-		testResponseDto.setImageUrl(rank.getImageUrl());
-		testResponseDto.setTitle(rank.getTitle());
-		testResponseDto.setDescription(rank.getDescription());
-		return testResponseDto;
 	}
 
 	public static RANK of(int temperature) {

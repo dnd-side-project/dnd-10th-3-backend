@@ -1,10 +1,7 @@
 package dnd.donworry.domain.dto.test;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import dnd.donworry.domain.constants.RANK;
 import dnd.donworry.domain.entity.TestResult;
 import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -68,7 +65,7 @@ public class TestResponseDto {
 	private String createdAt;
 
 	public static TestResponseDto of(TestResult testResult) {
-		TestResponseDto testResponseDto = TestResponseDto.builder()
+		return TestResponseDto.builder()
 			.id(testResult.getId())
 			.age(testResult.getAge().name())
 			.gender(testResult.getGender().name())
@@ -77,23 +74,10 @@ public class TestResponseDto {
 			.love(testResult.getLove())
 			.talk(testResult.getTalk())
 			.createdAt(TimeUtil.toTimeStampString(testResult.getCreatedAt()))
+			.temperature(testResult.getTemperature())
+			.description(testResult.getDescription())
+			.title(testResult.getTitle())
 			.build();
-
-		return RANK.toTestResponseDto(testResponseDto, testResult.getTemperature());
-	}
-
-	public static TestResponseDto of(TestRequestDto testRequestDto, int temperature) {
-		TestResponseDto testResponseDto = TestResponseDto.builder()
-			.age(testRequestDto.getAge())
-			.gender(testRequestDto.getGender())
-			.buddy(testRequestDto.getBuddy())
-			.trust(testRequestDto.getTrust())
-			.love(testRequestDto.getLove())
-			.talk(testRequestDto.getTalk())
-			.createdAt(TimeUtil.toTimeStampString(LocalDateTime.now()))
-			.build();
-
-		return RANK.toTestResponseDto(testResponseDto, temperature);
 	}
 
 }
