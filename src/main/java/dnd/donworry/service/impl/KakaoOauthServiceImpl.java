@@ -11,6 +11,7 @@ import dnd.donworry.repository.UserRepository;
 import dnd.donworry.service.KakaoOauthService;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -24,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONObject;
 
+@Slf4j
 @PropertySource(value = {"classpath:application-kakao.yml"}, factory = YamlPropertySourceFactory.class)
 @RequiredArgsConstructor
 @Service
@@ -66,14 +68,17 @@ public class KakaoOauthServiceImpl implements KakaoOauthService {
                 String.class
         );
 
+        log.info("Kakao API 응답: {}", response.getBody());
+
         ObjectMapper objectMapper = new ObjectMapper();
         OAuthToken oAuthToken = null;
         try {
             oAuthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
         } catch (JsonMappingException e) {
+            log.error("JsonMappingException during token parsing: {}", e.getMessage());
             e.printStackTrace();
-
         } catch (JsonProcessingException e) {
+            log.error("JsonProcessingException during token parsing: {}", e.getMessage());
             e.printStackTrace();
         }
         return oAuthToken.getAccess_token();
@@ -95,7 +100,7 @@ public class KakaoOauthServiceImpl implements KakaoOauthService {
                 request,
                 String.class
         );
-
+        log.info("Kakao API 응답: {}", response.getBody());
         JSONObject jsonObject = new JSONObject(response.getBody());
         JSONObject kakaoAccount = jsonObject.getJSONObject("kakao_account");
         JSONObject profile = kakaoAccount.getJSONObject("profile");
