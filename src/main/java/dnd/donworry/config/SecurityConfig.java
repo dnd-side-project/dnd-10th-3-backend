@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/login/oauth2/code/kakao",  "swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers("/login/oauth2/code/kakao",  "swagger-ui/**", "/v3/api-docs/**","/api/v1/vote/all")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -89,7 +89,8 @@ public class SecurityConfig {
                         .requestMatchers("/swaggerUser")
                         .requestMatchers("/api-docs/**")
                         .requestMatchers("/api/v1/test/result_no_user")
-                        .requestMatchers("/swagger-ui/**");
+                        .requestMatchers("/swagger-ui/**")
+                        .requestMatchers("/api/v1/vote/all");
     }
 
 }
