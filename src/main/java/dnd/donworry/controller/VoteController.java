@@ -57,7 +57,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<VoteResponseDto> create(@RequestPart(value = "voteReuestDto") VoteRequestDto voteRequestDto,
+	public ResResult<VoteResponseDto> create(@RequestPart(value = "voteRequestDto") VoteRequestDto voteRequestDto,
 		@RequestPart(value = "images") List<MultipartFile> images,
 		@Parameter(hidden = true) Authentication authentication) {
 		voteRequestDto.mapImages(images);
@@ -121,5 +121,43 @@ public class VoteController {
 	public ResResult<List<VoteResponseDto>> findMyVotes(
 		@Parameter(hidden = true) Authentication authentication) {
 		return ResponseCode.VOTE_FOUND.toResponse(voteService.findMyVotes(authentication.getName()));
+	}
+
+	@GetMapping("/{voteId}")
+	@Operation(summary = "투표 조회", description = "특정 투표를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "투표 조회 성공"),
+		@ApiResponse(responseCode = "400", description = "투표 조회 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"400\", \n \"message\": \"투표 조회에 실패했습니다.\"\n}"))),
+		@ApiResponse(responseCode = "404", description = "투표가 존재하지 않음", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"404\", \n \"message\": \"투표가 존재하지 않습니다.\"\n}"))),
+		@ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
+	})
+	public ResResult<VoteResponseDto> findVoteDetail(@PathVariable("voteId") Long voteId,
+		@Parameter(hidden = true) Authentication authentication) {
+		return ResponseCode.VOTE_FOUND.toResponse(
+			voteService.findVoteDetail(voteId, authentication.getName()));
+	}
+
+	@GetMapping("/best")
+	@Operation(summary = "베스트 투표 조회", description = "베스트 투표를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "투표 조회 성공"),
+		@ApiResponse(responseCode = "400", description = "투표 조회 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"400\", \n \"message\": \"투표 조회에 실패했습니다.\"\n}"))),
+		@ApiResponse(responseCode = "404", description = "투표가 존재하지 않음", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"404\", \n \"message\": \"투표가 존재하지 않습니다.\"\n}"))),
+		@ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
+	})
+	public ResResult<VoteResponseDto> findBestVote() {
+		return ResponseCode.VOTE_FOUND.toResponse(voteService.findBestVote());
 	}
 }
