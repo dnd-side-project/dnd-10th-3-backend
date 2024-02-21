@@ -1,10 +1,5 @@
 package dnd.donworry.service.impl;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import dnd.donworry.domain.dto.jwt.TokenDto;
 import dnd.donworry.domain.dto.jwt.TokenResponseDto;
 import dnd.donworry.domain.dto.user.UserDto;
@@ -20,6 +15,10 @@ import dnd.donworry.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +35,7 @@ public class OauthServiceImpl implements OauthService {
 
 	@Transactional
 	public TokenResponseDto loginWithKakao(String code, HttpServletResponse response) {
+		log.info("oauthServiceImpl.code = {}", code);
 		UserDto userDto = kakaoOauthService.login(code);
 		TokenDto tokenDto = jwtProvider.generateJwtToken(userDto.getEmail());
 		createToken(userDto.getEmail(), response);
