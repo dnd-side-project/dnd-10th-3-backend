@@ -73,4 +73,8 @@ public class Vote extends BaseEntity {
 		this.content = voteUpdateDto.getContent();
 		this.category = Category.of(voteUpdateDto.getCategory());
 	}
+
+	public void addView() {
+		this.views++;
+	}
 }
