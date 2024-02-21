@@ -68,6 +68,7 @@ public class VoteServiceImpl implements VoteService {
 
 	public VoteResponseDto findVoteDetail(Long voteId, String email) {
 		Vote vote = voteRepository.findById(voteId).orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
+		vote.addView();
 		return VoteResponseDto.of(vote, findSelections(voteId),
 			findUserSelectionForVote(email, voteId));
 	}
