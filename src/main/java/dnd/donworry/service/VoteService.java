@@ -18,4 +18,7 @@ public interface VoteService {
 
 	List<VoteResponseDto> findMyVotes(String email);
 
+	VoteResponseDto findVoteDetail(Long voteId, String email);
+
+	VoteResponseDto findBestVote();
 }

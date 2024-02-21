@@ -66,6 +66,12 @@ public class VoteServiceImpl implements VoteService {
 		voteRepository.delete(vote);
 	}
 
+	public VoteResponseDto findVoteDetail(Long voteId, String email) {
+		Vote vote = voteRepository.findById(voteId).orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
+		return VoteResponseDto.of(vote, findSelections(voteId),
+			findUserSelectionForVote(email, voteId));
+	}
+
 	@Override
 	@Transactional
 	public VoteResponseDto update(VoteUpdateDto voteUpdateDto, String email) {
@@ -102,6 +108,12 @@ public class VoteServiceImpl implements VoteService {
 				findSelections(v.getId()),
 				findUserSelectionForVote(email, v.getId())))
 			.toList();
+	}
+
+	@Override
+	public VoteResponseDto findBestVote() {
+		Vote vote = voteRepository.findBestVote();
+		return VoteResponseDto.of(vote, findSelections(vote.getId()), null);
 	}
 
 	@Transactional
@@ -150,4 +162,5 @@ public class VoteServiceImpl implements VoteService {
 	private Long findUserSelectionForVote(String email, Long voteId) {
 		return userVoteRepository.findUserSelectionForVote(email, voteId);
 	}
+
 }
