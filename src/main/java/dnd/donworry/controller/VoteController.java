@@ -1,18 +1,5 @@
 package dnd.donworry.controller;
 
-import java.util.List;
-
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
@@ -27,6 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/vote")
@@ -103,9 +96,17 @@ public class VoteController {
 	})
 	public ResResult<List<VoteResponseDto>> findAllVotes(
 		@Parameter(hidden = true) Authentication authentication) {
-		return ResponseCode.VOTE_FOUND.toResponse(
-			voteService.findAllVotes(authentication != null ? authentication.getName() : null));
+		long start = System.currentTimeMillis();
+		try {
+			return ResponseCode.VOTE_FOUND.toResponse(
+					voteService.findAllVotes(authentication != null ? authentication.getName() : null));
+		} finally {
+			long finish = System.currentTimeMillis();
+			long timeMs = finish - start;
+			log.info("findAllVotes ={}",timeMs + "ms");
+		}
 	}
+
 
 	@GetMapping("/mine")
 	@Operation(summary = "내 투표 조회", description = "내가 생성한 투표를 조회합니다.")
