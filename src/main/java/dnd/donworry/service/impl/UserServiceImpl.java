@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+	private static final String ACCESS_TOKEN = "Access-Token";
+	private static final String REFRESH_TOKEN = "Refresh-Token";
 	private final UserRepository userRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final CookieUtil cookieUtil;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	public void logout(String email, HttpServletResponse response) {
-		cookieUtil.deleteCookie(response, "ACCESS_TOKEN", "REFRESH_TOKEN");
+		cookieUtil.deleteCookie(response, ACCESS_TOKEN, REFRESH_TOKEN);
 		refreshTokenRepository.deleteById(email);
 	}
 }
