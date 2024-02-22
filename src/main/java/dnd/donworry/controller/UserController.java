@@ -47,9 +47,9 @@ public class UserController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<?> deleteUser(Authentication authentication) {
+	public ResResult<?> deleteUser(Authentication authentication, HttpServletResponse response) {
 		userService.deleteUser(authentication.getName());
-		return ResponseCode.MEMBER_DELETE.toResponse(null);
+		return ResponseCode.MEMBER_DELETE.toResponse(null, response);
 	}
 
 	@PatchMapping
@@ -70,9 +70,9 @@ public class UserController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<UserResponseDto.UPDATE> updateUserNickname(Authentication authentication
-		, @Valid @RequestBody UserRequestDto.UPDATE update) {
+		, @Valid @RequestBody UserRequestDto.UPDATE update, HttpServletResponse response) {
 		return ResponseCode.NICKNAME_UPDATE.toResponse(userService.updateUserNickname(
-			authentication.getName(), update.getNickname()));
+			authentication.getName(), update.getNickname()), response);
 	}
 
 	@PostMapping("/logout")
@@ -91,7 +91,7 @@ public class UserController {
 	})
 	public ResResult<?> logoutUser(Authentication authentication, HttpServletResponse response) {
 		userService.logout(authentication.getName(), response);
-		return ResponseCode.MEMBER_LOGOUT.toResponse(null);
+		return ResponseCode.MEMBER_LOGOUT.toResponse(null, response);
 	}
-    
+
 }

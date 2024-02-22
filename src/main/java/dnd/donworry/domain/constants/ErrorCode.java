@@ -1,6 +1,7 @@
 package dnd.donworry.domain.constants;
 
 import io.micrometer.common.lang.Nullable;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -68,7 +69,8 @@ public enum ErrorCode {
 		this.message = message;
 	}
 
-	public <T> ResResult<Object> toResponse(@Nullable T data) {
+	public <T> ResResult<Object> toResponse(@Nullable T data, HttpServletResponse response) {
+		response.setStatus(Integer.parseInt(this.getCode()));
 		return ResResult.builder()
 			.code(this.getCode())
 			.message(this.getMessage())

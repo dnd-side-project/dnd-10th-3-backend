@@ -1,6 +1,7 @@
 package dnd.donworry.domain.constants;
 
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -58,7 +59,8 @@ public enum ResponseCode {
 		this.message = message;
 	}
 
-	public <T> ResResult<T> toResponse(@Nullable T data) {
+	public <T> ResResult<T> toResponse(@Nullable T data, HttpServletResponse response) {
+		response.setStatus(Integer.parseInt(this.code));
 		return ResResult.<T>builder()
 			.code(this.code)
 			.message(this.message)

@@ -36,4 +36,5 @@ public class VoteRepositoryImpl extends Querydsl4RepositorySupport implements Vo
 		return Optional.ofNullable(selectFrom(vote).where(vote.id.eq(voteId)).fetchFirst())
 			.orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
 	}
+
 }
