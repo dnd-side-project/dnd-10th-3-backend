@@ -38,8 +38,8 @@ public class OauthController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<LoginResponseDto> login(@Valid @RequestParam(value = "code") String code,
-											 HttpServletResponse response) {
-		return ResponseCode.MEMBER_LOGIN.toResponse(oauthService.loginWithKakao(code, response));
+		HttpServletResponse response) {
+		return ResponseCode.MEMBER_LOGIN.toResponse(oauthService.loginWithKakao(code, response), response);
 	}
 
 	@PostMapping("/swaggerUser")
@@ -51,6 +51,6 @@ public class OauthController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<UserResponseDto.UPDATE> createSwaggerUser(HttpServletResponse response) {
-		return ResponseCode.MEMBER_SAVE.toResponse(oauthService.createSwaggerUser(response));
+		return ResponseCode.MEMBER_SAVE.toResponse(oauthService.createSwaggerUser(response), response);
 	}
 }

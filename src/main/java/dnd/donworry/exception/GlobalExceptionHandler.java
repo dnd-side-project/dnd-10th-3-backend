@@ -1,6 +1,5 @@
 package dnd.donworry.exception;
 
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,22 +15,22 @@ import org.springframework.web.context.request.WebRequest;
 
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.constants.ResResult;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(CustomException.class)
-	protected ResResult<?> handlerCustomException(CustomException e) {
+	protected ResResult<?> handlerCustomException(CustomException e, HttpServletResponse response) {
 		log.error("CustomException: " + e.getErrorCode().getMessage());
-		return e.getErrorCode().toResponse(null);
+		return e.getErrorCode().toResponse(null, response);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	protected ResResult<?> handleMethodArgumentNotValid(
-		MethodArgumentNotValidException e, HttpHeaders h, HttpStatus s, WebRequest w
+		MethodArgumentNotValidException e, HttpHeaders h, HttpStatus s, WebRequest w, HttpServletResponse response
 	) {
 		Map<String, String> validExceptions = e.getBindingResult().getFieldErrors().stream()
 			.collect(Collectors.toMap(
@@ -39,14 +38,14 @@ public class GlobalExceptionHandler {
 				DefaultMessageSourceResolvable::getDefaultMessage
 			));
 		log.error("Validation Exception: " + validExceptions);
-		return ErrorCode.INVALID_REQUEST.toResponse(validExceptions);
+		return ErrorCode.INVALID_REQUEST.toResponse(validExceptions, response);
 	}
 
 	@ExceptionHandler(Exception.class)
-	protected ResResult<?> handlerException(Exception e) {
+	protected ResResult<?> handlerException(Exception e, HttpServletResponse response) {
 		log.error("Unexpected_Exception : " + e.getMessage());
 		log.error("Unexpected_Exception : " + Arrays.toString(e.getStackTrace()));
-		return ErrorCode.UNEXPECTED_EXCEPTION.toResponse(null);
+		return ErrorCode.UNEXPECTED_EXCEPTION.toResponse(null, response);
 	}
 
 }

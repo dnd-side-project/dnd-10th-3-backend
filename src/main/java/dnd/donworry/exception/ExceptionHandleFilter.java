@@ -1,11 +1,9 @@
 package dnd.donworry.exception;
 
-
 import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.constants.ResResult;
@@ -15,14 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Component
 @Slf4j
 public class ExceptionHandleFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		                              FilterChain filterChain) throws ServletException, IOException {
+		FilterChain filterChain) throws ServletException, IOException {
 		try {
 			filterChain.doFilter(request, response);
 		} catch (CustomException e) {
@@ -33,6 +30,7 @@ public class ExceptionHandleFilter extends OncePerRequestFilter {
 	private void handleCustomException(CustomException e, HttpServletResponse response) throws IOException {
 		log.error("CustomException", e);
 		ResResult<?> errorResponse = buildErrorResponse(e);
+		response.setStatus(Integer.parseInt(errorResponse.getCode()));
 		setResponse(response, errorResponse);
 	}
 

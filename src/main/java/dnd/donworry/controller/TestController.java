@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,9 +49,9 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<?> saveBackground(@RequestBody TestResponseDto testResponseDto,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		testService.saveBackground(authentication.getName(), testResponseDto);
-		return ResponseCode.TEST_SUCCESS.toResponse(null);
+		return ResponseCode.TEST_SUCCESS.toResponse(null, response);
 	}
 
 	@PostMapping("/result")
@@ -65,9 +66,9 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<TestResponseDto> makeResult(@RequestBody TestRequestDto testRequestDto,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		return ResponseCode.TEST_SUCCESS.toResponse(
-			testService.saveResult(authentication != null ? authentication.getName() : null, testRequestDto));
+			testService.saveResult(authentication != null ? authentication.getName() : null, testRequestDto), response);
 	}
 
 	@GetMapping("/result/{resultId}")
@@ -90,8 +91,9 @@ public class TestController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
-	public ResResult<TestResponseDto> findResult(@PathVariable("resultId") Long resultId) {
-		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId));
+	public ResResult<TestResponseDto> findResult(@PathVariable("resultId") Long resultId,
+		HttpServletResponse response) {
+		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId), response);
 	}
 
 	@GetMapping("/my")
@@ -115,8 +117,9 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
 	public ResResult<List<TestResponseDto>> findMyResults(
-		@Parameter(hidden = true) Authentication authentication) {
-		return ResponseCode.TEST_SUCCESS.toResponse(testService.findMyResults(authentication.getName(), null));
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
+		return ResponseCode.TEST_SUCCESS.toResponse(testService.findMyResults(authentication.getName(), null),
+			response);
 	}
 
 /*	@PostMapping("/result_no_user")
