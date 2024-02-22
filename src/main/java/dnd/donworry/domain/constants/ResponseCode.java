@@ -37,6 +37,7 @@ public enum ResponseCode {
 	COMMENT_CREATE("200", "댓글 생성에 성공했습니다."),
 	COMMENT_UPDATE("200", "댓글 수정에 서공했습니다."),
 	COMMENT_DELETE("200", "댓글 삭제에 성공했습니다."),
+	COMMENT_READ("200", "댓글 조회에 성공했습니다."),
 
 	/* LIKES */
 	LIKES_ADD("200", "좋아요 추가에 성공했습니다."),

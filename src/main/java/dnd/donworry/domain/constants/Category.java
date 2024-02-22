@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Category {
 
 	CONGRATULATORY_MONEY("축의금"),
-	BRIDAL_SHOWER("브라이덜 샤워"),
+	BRIDAL_SHOWER("브라이덜샤워"),
 	GUEST_LOOK("하객룩"),
 	ETC("기타");
 

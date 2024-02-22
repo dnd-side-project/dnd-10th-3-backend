@@ -2,7 +2,8 @@ package dnd.donworry.service;
 
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
-import dnd.donworry.domain.dto.commentLike.CommentLikeResponseDto;
+
+import java.util.List;
 
 public interface CommentService {
 
@@ -12,5 +13,7 @@ public interface CommentService {
 
     void deleteComment(Long commentId, String email);
 
-    CommentLikeResponseDto updateEmpathy(Long commentId, String email);
+    CommentResponseDto updateEmpathy(Long commentId, String email);
+
+    List<CommentResponseDto> getComments(String email ,Long voteId, Long lastCommentId, int size);
 }
