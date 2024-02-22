@@ -156,4 +156,5 @@ public class CommentController {
 		return ResponseCode.COMMENT_READ.toResponse(
 			commentService.getComments(authentication.getName(), voteId, lastCommentId, size), response);
 	}
+
 }
