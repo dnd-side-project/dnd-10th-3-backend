@@ -4,7 +4,6 @@ import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
-import dnd.donworry.domain.dto.commentLike.CommentLikeResponseDto;
 import dnd.donworry.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -111,11 +112,19 @@ public class CommentController {
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
     })
-    ResResult<CommentLikeResponseDto> empathy(@PathVariable(name = "commentId") Long commentId,
+    ResResult<CommentResponseDto> empathy(@PathVariable(name = "commentId") Long commentId,
                                            Authentication authentication) {
-        CommentLikeResponseDto empathy = commentService.updateEmpathy(commentId, authentication.getName());
+        CommentResponseDto empathy = commentService.updateEmpathy(commentId, authentication.getName());
         return empathy.isStatus() ? ResponseCode.LIKES_ADD.toResponse(empathy)
                 : ResponseCode.LIKES_CANCEL.toResponse(empathy);
 
+    }
+
+    @GetMapping("/{voteId}")
+    ResResult<List<CommentResponseDto>> getComments(@PathVariable(name = "voteId") Long voteId,
+                                                    @RequestParam(value = "lastCommentId", defaultValue = "0") Long lastCommentId,
+                                                    @RequestParam(value = "size", defaultValue = "2") int size,
+                                                    Authentication authentication) {
+        return ResponseCode.COMMENT_READ.toResponse(commentService.getComments(authentication.getName(),voteId, lastCommentId, size));
     }
 }

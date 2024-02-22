@@ -3,7 +3,7 @@ package dnd.donworry.service.impl;
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
-import dnd.donworry.domain.dto.commentLike.CommentLikeResponseDto;
+import dnd.donworry.domain.dto.comment.CommentResponseReadDto;
 import dnd.donworry.domain.entity.Comment;
 import dnd.donworry.domain.entity.CommentLike;
 import dnd.donworry.domain.entity.User;
@@ -15,11 +15,15 @@ import dnd.donworry.repository.UserRepository;
 import dnd.donworry.repository.VoteRepository;
 import dnd.donworry.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -39,10 +43,23 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentRepository.save(
                 Comment.toEntity(findVote(voteId), findUser(email), commentRequestDto));
 
-        return CommentResponseDto.of(savedComment);
+        return CommentResponseDto.of(savedComment, false);
     }
 
+    public List<CommentResponseDto> getComments(String email, Long voteId, Long lastCommentId, int size) {
+        Vote vote = findVote(voteId);
+        List<CommentResponseReadDto> list = commentRepository.findCommentsByVote(vote, lastCommentId, size, email);
 
+        if (lastCommentId == 0L && list.isEmpty()) {
+            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+        } else if (list.isEmpty()) {
+            throw new CustomException(ErrorCode.COMMENT_SEARCH_NOT_FOUND);
+        }
+
+        return list.stream()
+                .map(CommentResponseDto::ofRead)
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     @Override
@@ -51,7 +68,10 @@ public class CommentServiceImpl implements CommentService {
         comment.updateContent(commentRequestDto.getContent());
         commentRepository.save(comment);
 
-        return CommentResponseDto.of(comment);
+        Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(comment.getId());
+
+        return commentLike.map(like -> CommentResponseDto.of(comment, like.isStatus()))
+                .orElse(CommentResponseDto.of(comment, false));
     }
 
     @Transactional
@@ -61,10 +81,10 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    public CommentLikeResponseDto updateEmpathy(Long commentId, String email) {
-        Comment comment = findComment(commentId);
+    public CommentResponseDto updateEmpathy(Long commentId, String email) {
         User user = findUser(email);
-        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentIdAndUserEmail(comment.getId(), user.getEmail());
+        Comment comment = validateUserAndComment(commentId, user.getEmail());
+        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentId(comment.getId());
 
         CommentLike commentLike = findCommentLike.orElseGet(() -> CommentLike.toEntity(user, comment, false));
 
@@ -72,19 +92,18 @@ public class CommentServiceImpl implements CommentService {
 
         savedComment(comment, commentLike);
 
-        return CommentLikeResponseDto.of(comment, commentLike);
+        return CommentResponseDto.of(comment, commentLike.isStatus());
     }
 
     private void savedCommentLike(CommentLike commentLike) {
         commentLike.updateStatus();
         commentLikeRepository.save(commentLike);
     }
+
     private void savedComment(Comment comment, CommentLike commentLike) {
         comment.updateLike(commentLike.isStatus());
         commentRepository.save(comment);
     }
-
-
 
 
     private Comment validateUserAndComment(Long commentId, String email) {
@@ -98,11 +117,11 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment findComment(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUNT));
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
     private User findUser(String email) {
-        return  userRepository.findUserByEmail(email)
+        return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
