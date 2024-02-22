@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private void handleTokens(String accessToken, String refreshToken, HttpServletRequest request,
                               HttpServletResponse response) {
         if (accessToken != null && refreshToken != null) {
-            handleBothTokenExists(accessToken, refreshToken, request, response);
+            handleBothTokenExists(accessToken, refreshToken, request);
             return;
         }
         if (accessToken == null && refreshToken != null) {
@@ -54,14 +54,14 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         if (accessToken != null) {
-            handleAccessTokenOnly(accessToken, request, response);
+            handleAccessTokenOnly(accessToken, request);
             return;
         }
         handleNoTokens();
     }
 
     private void handleBothTokenExists(String accessToken, String refreshToken,
-                                       HttpServletRequest request, HttpServletResponse response) {
+                                       HttpServletRequest request) {
 
         String email = jwtProvider.getEmailFromToken(accessToken);
         RefreshToken refreshTokenOld = fetchRefreshTokenByEmail(email);
@@ -71,7 +71,6 @@ public class JwtFilter extends OncePerRequestFilter {
         jwtProvider.validateToken(accessToken);
         jwtProvider.validateToken(refreshToken);
 
-        reissue(email, refreshTokenOld, response);
         setAuthentication(request, email);
     }
 
@@ -97,16 +96,11 @@ public class JwtFilter extends OncePerRequestFilter {
         setAuthentication(request, email);
     }
 
-    private void handleAccessTokenOnly(String accessToken, HttpServletRequest request,
-                                       HttpServletResponse response) {
+    private void handleAccessTokenOnly(String accessToken, HttpServletRequest request) {
         jwtProvider.validateToken(accessToken);
 
         String email = jwtProvider.getEmailFromToken(accessToken);
-        RefreshToken refreshTokenOld = fetchRefreshTokenByEmail(email);
-
-        reissue(email, refreshTokenOld, response);
         setAuthentication(request, email);
-
     }
 
     private void handleNoTokens() {
