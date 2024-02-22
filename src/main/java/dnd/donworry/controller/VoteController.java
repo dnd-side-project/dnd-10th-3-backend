@@ -1,5 +1,18 @@
 package dnd.donworry.controller;
 
+import java.util.List;
+
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
@@ -12,14 +25,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/vote")
@@ -52,9 +60,10 @@ public class VoteController {
 	})
 	public ResResult<VoteResponseDto> create(@RequestPart(value = "voteRequestDto") VoteRequestDto voteRequestDto,
 		@RequestPart(value = "images") List<MultipartFile> images,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		voteRequestDto.mapImages(images);
-		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(authentication.getName(), voteRequestDto));
+		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(authentication.getName(), voteRequestDto),
+			response);
 	}
 
 	@DeleteMapping("/{voteId}")
@@ -78,9 +87,9 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<Void> delete(@PathVariable("voteId") Long voteId,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		voteService.delete(voteId, authentication.getName());
-		return ResponseCode.VOTE_DELETED.toResponse(null);
+		return ResponseCode.VOTE_DELETED.toResponse(null, response);
 	}
 
 	@GetMapping("/all")
@@ -95,18 +104,17 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<List<VoteResponseDto>> findAllVotes(
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		long start = System.currentTimeMillis();
 		try {
 			return ResponseCode.VOTE_FOUND.toResponse(
-					voteService.findAllVotes(authentication != null ? authentication.getName() : null));
+				voteService.findAllVotes(authentication != null ? authentication.getName() : null), response);
 		} finally {
 			long finish = System.currentTimeMillis();
 			long timeMs = finish - start;
-			log.info("findAllVotes ={}",timeMs + "ms");
+			log.info("findAllVotes ={}", timeMs + "ms");
 		}
 	}
-
 
 	@GetMapping("/mine")
 	@Operation(summary = "내 투표 조회", description = "내가 생성한 투표를 조회합니다.")
@@ -120,8 +128,8 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<List<VoteResponseDto>> findMyVotes(
-		@Parameter(hidden = true) Authentication authentication) {
-		return ResponseCode.VOTE_FOUND.toResponse(voteService.findMyVotes(authentication.getName()));
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
+		return ResponseCode.VOTE_FOUND.toResponse(voteService.findMyVotes(authentication.getName()), response);
 	}
 
 	@GetMapping("/{voteId}")
@@ -139,9 +147,9 @@ public class VoteController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
 	public ResResult<VoteResponseDto> findVoteDetail(@PathVariable("voteId") Long voteId,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		return ResponseCode.VOTE_FOUND.toResponse(
-			voteService.findVoteDetail(voteId, authentication.getName()));
+			voteService.findVoteDetail(voteId, authentication.getName()), response);
 	}
 
 	@GetMapping("/best")
@@ -158,7 +166,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<VoteResponseDto> findBestVote() {
-		return ResponseCode.VOTE_FOUND.toResponse(voteService.findBestVote());
+	public ResResult<VoteResponseDto> findBestVote(HttpServletResponse response) {
+		return ResponseCode.VOTE_FOUND.toResponse(voteService.findBestVote(), response);
 	}
 }

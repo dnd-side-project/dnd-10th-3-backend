@@ -11,6 +11,7 @@ import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.service.UserVoteService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,8 +25,8 @@ public class UserVoteController {
 
 	@PostMapping("/voteId/{voteId}/selectionId/{selectionId}")
 	public ResResult<?> attend(@PathVariable("voteId") Long voteId, @PathVariable("selectionId") Long selectionId,
-		@Parameter(hidden = true) Authentication authentication) {
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		userVoteService.attend(authentication.getName(), voteId, selectionId);
-		return ResponseCode.USER_VOTE_ATTEND.toResponse(null);
+		return ResponseCode.USER_VOTE_ATTEND.toResponse(null, response);
 	}
 }
