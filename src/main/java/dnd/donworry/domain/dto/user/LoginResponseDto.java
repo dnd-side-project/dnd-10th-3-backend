@@ -17,6 +17,6 @@ public class LoginResponseDto {
     @Schema(name = "refreshToken", example = "REFRESH_TOKEN")
     private String refreshToken;
 
-    @Schema(name = "nickname", example = "행복한10기3조@1")
+    @Schema(name = "nickname", example = "행복한10기3조@123")
     private String nickname;
 }
