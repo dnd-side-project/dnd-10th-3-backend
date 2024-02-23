@@ -71,7 +71,7 @@ public class TestController {
 			testService.saveResult(authentication != null ? authentication.getName() : null, testRequestDto), response);
 	}
 
-	@GetMapping("/result/{resultId}")
+	@GetMapping("/result/{resultId}/{share}")
 	@Operation(summary = "테스트 결과 조회", description = "테스트 결과를 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "테스트 결과 조회 성공"),
@@ -92,6 +92,7 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
 	public ResResult<TestResponseDto> findResult(@PathVariable("resultId") Long resultId,
+		@PathVariable("share") Boolean share,
 		HttpServletResponse response) {
 		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId), response);
 	}
