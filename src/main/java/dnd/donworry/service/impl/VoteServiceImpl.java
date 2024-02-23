@@ -75,7 +75,10 @@ public class VoteServiceImpl implements VoteService {
 	public VoteResponseDto findVoteDetail(Long voteId, String email) {
 		Vote vote = voteRepository.findByIdCustom(voteId);
 		vote.addView();
-		return setUserSelection(vote, email);
+		VoteResponseDto voteResponseDto = setUserSelection(vote, email);
+		voteResponseDto.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), voteResponseDto.getVoters()));
+
+		return voteResponseDto;
 	}
 
 	@Override
@@ -89,7 +92,11 @@ public class VoteServiceImpl implements VoteService {
 		}
 
 		vote.update(voteUpdateDto);
-		return setUserSelection(vote, email);
+
+		VoteResponseDto votes = setUserSelection(vote, email);
+
+		votes.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), votes.getVoters()));
+		return votes;
 	}
 
 	@Override
@@ -97,17 +104,31 @@ public class VoteServiceImpl implements VoteService {
 		if (email == null) {
 			return voteRepository.findAllCustom().stream().map(VoteResponseDto::of).toList();
 		}
-		return voteRepository.findAllCustom().stream().map(v -> setUserSelection(v, email)).toList();
+		List<VoteResponseDto> votes = voteRepository.findAllCustom()
+			.stream()
+			.map(v -> setUserSelection(v, email))
+			.toList();
+
+		setVotePercentage(votes);
+
+		return votes;
 	}
 
 	@Override
 	public List<VoteResponseDto> findMyVotes(String email) {
-		return voteRepository.findMyVotes(email).stream().map(v -> setUserSelection(v, email)).toList();
+		List<VoteResponseDto> votes = voteRepository.findMyVotes(email)
+			.stream()
+			.map(v -> setUserSelection(v, email))
+			.toList();
+		setVotePercentage(votes);
+		return votes;
 	}
 
 	@Override
 	public VoteResponseDto findBestVote() {
-		return VoteResponseDto.of(voteRepository.findBestVote());
+		VoteResponseDto bestVote = VoteResponseDto.of(voteRepository.findBestVote());
+		bestVote.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), bestVote.getVoters()));
+		return bestVote;
 	}
 
 	@Transactional
@@ -141,8 +162,8 @@ public class VoteServiceImpl implements VoteService {
 		return Selection.toEntity(selectionRequestDto.getContent(), vote);
 	}
 
-	private void setVotePercentage(List<SelectionResponseDto> selectionResponseDtos, int totalCount) {
-		selectionResponseDtos.forEach(s -> s.setVotePercentage(s.getCount(), totalCount));
+	private void setVotePercentage(List<VoteResponseDto> votes) {
+		votes.forEach(v -> v.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), v.getVoters())));
 	}
 
 	private List<SelectionResponseDto> findSelections(Long voteId) {
