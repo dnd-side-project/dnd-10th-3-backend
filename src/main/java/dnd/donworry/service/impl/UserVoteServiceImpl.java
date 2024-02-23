@@ -26,17 +26,18 @@ public class UserVoteServiceImpl implements UserVoteService {
 	@Transactional
 	public void attend(String email, Long voteId, Long selectionId) {
 		Vote vote = selectionRepository.findByIdCustom(selectionId).getVote();
-
 		// 이미 참여한 경우 (같은 선택지 -> 취소, 다른 선택지 -> 변경)
 		userVoteRepository.findUserVoteByEmailAndVoteId(email, voteId).ifPresent(uv -> {
 			vote.minusVoter();
+			Selection selection = selectionRepository.findByIdCustom(uv.getSelection().getId());
+			selection.minusCount();
 			userVoteRepository.delete(uv);
 		});
 
 		vote.addVoter();
 		Selection selection = selectionRepository.findByIdCustom(selectionId);
 		selection.addCount();
-		
+
 		if (selectionId != null) {
 			userVoteRepository.save(
 				UserVote.of(userRepository.findByEmailCustom(email), selection));

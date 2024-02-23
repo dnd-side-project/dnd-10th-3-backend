@@ -54,4 +54,8 @@ public class Selection {
 	public void addCount() {
 		this.count++;
 	}
+
+	public void minusCount() {
+		this.count--;
+	}
 }
