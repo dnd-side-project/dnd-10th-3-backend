@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
-import dnd.donworry.domain.dto.vote.VoteResponseDtoWithSelection;
+import dnd.donworry.domain.dto.vote.VoteResponseDto;
 import dnd.donworry.service.VoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,7 +58,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<VoteResponseDtoWithSelection> create(
+	public ResResult<VoteResponseDto> create(
 		@RequestPart(value = "voteRequestDto") VoteRequestDto voteRequestDto,
 		@RequestPart(value = "images") List<MultipartFile> images,
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
@@ -104,17 +104,10 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<List<VoteResponseDtoWithSelection>> findAllVotes(
+	public ResResult<List<VoteResponseDto>> findAllVotes(
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
-		long start = System.currentTimeMillis();
-		try {
-			return ResponseCode.VOTE_FOUND.toResponse(
-				voteService.findAllVotes(authentication != null ? authentication.getName() : null), response);
-		} finally {
-			long finish = System.currentTimeMillis();
-			long timeMs = finish - start;
-			log.info("findAllVotes ={}", timeMs + "ms");
-		}
+		return ResponseCode.VOTE_FOUND.toResponse(
+			voteService.findAllVotes(authentication != null ? authentication.getName() : null), response);
 	}
 
 	@GetMapping("/mine")
@@ -128,7 +121,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<List<VoteResponseDtoWithSelection>> findMyVotes(
+	public ResResult<List<VoteResponseDto>> findMyVotes(
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		return ResponseCode.VOTE_FOUND.toResponse(voteService.findMyVotes(authentication.getName()), response);
 	}
@@ -147,7 +140,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<VoteResponseDtoWithSelection> findVoteDetail(@PathVariable("voteId") Long voteId,
+	public ResResult<VoteResponseDto> findVoteDetail(@PathVariable("voteId") Long voteId,
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
 		return ResponseCode.VOTE_FOUND.toResponse(
 			voteService.findVoteDetail(voteId, authentication.getName()), response);
@@ -167,7 +160,7 @@ public class VoteController {
 			mediaType = "application/json",
 			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
 	})
-	public ResResult<VoteResponseDtoWithSelection> findBestVote(HttpServletResponse response) {
+	public ResResult<VoteResponseDto> findBestVote(HttpServletResponse response) {
 		return ResponseCode.VOTE_FOUND.toResponse(voteService.findBestVote(), response);
 	}
 }

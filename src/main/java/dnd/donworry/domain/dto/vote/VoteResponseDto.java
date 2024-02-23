@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -60,24 +61,30 @@ public class VoteResponseDto {
 	private String updatedAt;
 
 	@Schema(description = "선택한 선택지 ID", example = "1")
+	@Setter
 	private Long selected;
 
-	public static VoteResponseDto of(Vote vote, List<SelectionResponseDto> selections, Long selectedId) {
-		return VoteResponseDto.builder()
+	public static VoteResponseDto of(Vote vote) {
+		VoteResponseDto voteResponseDto = VoteResponseDto.builder()
 			.id(vote.getId())
 			.user(vote.getUser())
 			.title(vote.getTitle())
 			.content(vote.getContent())
-			.selections(selections)
 			.likes(vote.getLikes())
 			.views(vote.getViews())
 			.voters(vote.getVoters())
 			.status(vote.isStatus())
-			.selected(selectedId)
 			.category(vote.getCategory().getName())
 			.closeDate(vote.getCloseDate())
 			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
 			.updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))
 			.build();
+
+		voteResponseDto.selections = vote.getSelections()
+			.stream()
+			.map(SelectionResponseDto::of)
+			.toList();
+
+		return voteResponseDto;
 	}
 }

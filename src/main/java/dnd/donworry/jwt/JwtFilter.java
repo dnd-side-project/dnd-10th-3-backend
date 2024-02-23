@@ -1,5 +1,12 @@
 package dnd.donworry.jwt;
 
+import java.io.IOException;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.jwt.TokenDto;
 import dnd.donworry.domain.entity.RefreshToken;
@@ -13,147 +20,147 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final String ACCESS_TOKEN_HEADER = "Access-Token";
-    private final String REFRESH_TOKEN_HEADER = "Refresh-Token";
+	private final String ACCESS_TOKEN_HEADER = "Access-Token";
+	private final String REFRESH_TOKEN_HEADER = "Refresh-Token";
 
-    private final JwtProvider jwtProvider;
-    private final CookieUtil cookieUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
+	private final JwtProvider jwtProvider;
+	private final CookieUtil cookieUtil;
+	private final RefreshTokenRepository refreshTokenRepository;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-            handleTokens(
-                    resolveTokenFromCookie(request, ACCESS_TOKEN_HEADER),
-                    resolveTokenFromCookie(request, REFRESH_TOKEN_HEADER),
-                    request, response);
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+		throws ServletException, IOException {
+        
+		if (request.getRequestURI().equals("/api/v1/vote/all") & request.getCookies() == null) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-            filterChain.doFilter(request, response);
-    }
+		handleTokens(
+			resolveTokenFromCookie(request, ACCESS_TOKEN_HEADER),
+			resolveTokenFromCookie(request, REFRESH_TOKEN_HEADER),
+			request, response);
 
-    private void handleTokens(String accessToken, String refreshToken, HttpServletRequest request,
-                              HttpServletResponse response) {
-        if (accessToken != null && refreshToken != null) {
-            handleBothTokenExists(accessToken, refreshToken, request);
-            return;
-        }
-        if (accessToken == null && refreshToken != null) {
-            handleRefreshTokenOnly(refreshToken, request, response);
-            return;
-        }
-        if (accessToken != null) {
-            handleAccessTokenOnly(accessToken, request);
-            return;
-        }
-        handleNoTokens();
-    }
+		filterChain.doFilter(request, response);
+	}
 
-    private void handleBothTokenExists(String accessToken, String refreshToken,
-                                       HttpServletRequest request) {
+	private void handleTokens(String accessToken, String refreshToken, HttpServletRequest request,
+		HttpServletResponse response) {
+		if (accessToken != null && refreshToken != null) {
+			handleBothTokenExists(accessToken, refreshToken, request);
+			return;
+		}
+		if (accessToken == null && refreshToken != null) {
+			handleRefreshTokenOnly(refreshToken, request, response);
+			return;
+		}
+		if (accessToken != null) {
+			handleAccessTokenOnly(accessToken, request);
+			return;
+		}
+		handleNoTokens();
+	}
 
-        String email = jwtProvider.getEmailFromToken(accessToken);
-        RefreshToken refreshTokenOld = fetchRefreshTokenByEmail(email);
+	private void handleBothTokenExists(String accessToken, String refreshToken,
+		HttpServletRequest request) {
 
-        refreshTokenOld.validateRefreshTokenRotate(refreshToken);
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		RefreshToken refreshTokenOld = fetchRefreshTokenByEmail(email);
 
-        jwtProvider.validateToken(accessToken);
-        jwtProvider.validateToken(refreshToken);
+		refreshTokenOld.validateRefreshTokenRotate(refreshToken);
 
-        setAuthentication(request, email);
-    }
+		jwtProvider.validateToken(accessToken);
+		jwtProvider.validateToken(refreshToken);
 
-    private RefreshToken fetchRefreshTokenByEmail(String email) {
-        RefreshToken refreshToken = refreshTokenRepository.findByValue(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+		setAuthentication(request, email);
+	}
 
-        log.info("남은 일 수: " + refreshToken.getExpiration() / (60 * 60 * 24));
-        return refreshToken;
-    }
+	private RefreshToken fetchRefreshTokenByEmail(String email) {
+		RefreshToken refreshToken = refreshTokenRepository.findByValue(email)
+			.orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
 
-    private RefreshToken fetchRefreshTokenById(String refreshToken) {
-        return refreshTokenRepository.findById(refreshToken)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
-    }
+		log.info("남은 일 수: " + refreshToken.getExpiration() / (60 * 60 * 24));
+		return refreshToken;
+	}
 
-    private void handleRefreshTokenOnly(String refreshToken, HttpServletRequest request,
-                                        HttpServletResponse response) {
-        jwtProvider.validateToken(refreshToken);
+	private RefreshToken fetchRefreshTokenById(String refreshToken) {
+		return refreshTokenRepository.findById(refreshToken)
+			.orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+	}
 
-        RefreshToken refreshTokenOld = fetchRefreshTokenById(refreshToken);
-        String email = refreshTokenOld.getValue();
+	private void handleRefreshTokenOnly(String refreshToken, HttpServletRequest request,
+		HttpServletResponse response) {
+		jwtProvider.validateToken(refreshToken);
 
-        reissue(email, refreshTokenOld, response);
-        setAuthentication(request, email);
-    }
+		RefreshToken refreshTokenOld = fetchRefreshTokenById(refreshToken);
+		String email = refreshTokenOld.getValue();
 
-    private void handleAccessTokenOnly(String accessToken, HttpServletRequest request) {
-        jwtProvider.validateToken(accessToken);
+		reissue(email, refreshTokenOld, response);
+		setAuthentication(request, email);
+	}
 
-        String email = jwtProvider.getEmailFromToken(accessToken);
-        setAuthentication(request, email);
-    }
+	private void handleAccessTokenOnly(String accessToken, HttpServletRequest request) {
+		jwtProvider.validateToken(accessToken);
 
-    private void handleNoTokens() {
-        throw new CustomException(ErrorCode.NOT_AUTHORIZED_TOKEN);
-    }
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		setAuthentication(request, email);
+	}
 
-    private void reissue(String email, RefreshToken refreshTokenOld, HttpServletResponse response) {
-        TokenDto tokenDto = jwtProvider.generateJwtToken(email);
-        setAccessTokenCookie(response, tokenDto.getAccessToken());
-        setRefreshTokenCookie(response, tokenDto.getRefreshToken());
-        saveRefreshTokenCache(email, refreshTokenOld, tokenDto);
-    }
+	private void handleNoTokens() {
+		throw new CustomException(ErrorCode.NOT_AUTHORIZED_TOKEN);
+	}
 
-    private void setAccessTokenCookie(HttpServletResponse response, String accessToken) {
-        cookieUtil.setCookie(response, ACCESS_TOKEN_HEADER, accessToken,
-                jwtProvider.getAccessTokenExpiredTime());
-    }
+	private void reissue(String email, RefreshToken refreshTokenOld, HttpServletResponse response) {
+		TokenDto tokenDto = jwtProvider.generateJwtToken(email);
+		setAccessTokenCookie(response, tokenDto.getAccessToken());
+		setRefreshTokenCookie(response, tokenDto.getRefreshToken());
+		saveRefreshTokenCache(email, refreshTokenOld, tokenDto);
+	}
 
-    private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        cookieUtil.setCookie(response, REFRESH_TOKEN_HEADER, refreshToken,
-                jwtProvider.getRefreshTokenExpiredTime());
-    }
+	private void setAccessTokenCookie(HttpServletResponse response, String accessToken) {
+		cookieUtil.setCookie(response, ACCESS_TOKEN_HEADER, accessToken,
+			jwtProvider.getAccessTokenExpiredTime());
+	}
 
-    private void saveRefreshTokenCache(String email, RefreshToken refreshTokenOld,
-                                       TokenDto tokenDto) {
-        refreshTokenRepository.deleteById(refreshTokenOld.getKey());
+	private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+		cookieUtil.setCookie(response, REFRESH_TOKEN_HEADER, refreshToken,
+			jwtProvider.getRefreshTokenExpiredTime());
+	}
 
-        refreshTokenRepository.save(
-                new RefreshToken(tokenDto.getRefreshToken(), email,
-                        jwtProvider.getRefreshTokenExpiredTime()/1000));
-    }
+	private void saveRefreshTokenCache(String email, RefreshToken refreshTokenOld,
+		TokenDto tokenDto) {
+		refreshTokenRepository.deleteById(refreshTokenOld.getKey());
 
-    private void setAuthentication(HttpServletRequest request, String email) {
-        UserAuthentication authentication = new UserAuthentication(email, null, null);
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+		refreshTokenRepository.save(
+			new RefreshToken(tokenDto.getRefreshToken(), email,
+				jwtProvider.getRefreshTokenExpiredTime() / 1000));
+	}
 
-    private String resolveTokenFromCookie(HttpServletRequest request, String tokenType) {
-        Cookie[] cookies = request.getCookies();
+	private void setAuthentication(HttpServletRequest request, String email) {
+		UserAuthentication authentication = new UserAuthentication(email, null, null);
+		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+	}
 
-        if (cookies == null) {
-            return null;
-        }
+	private String resolveTokenFromCookie(HttpServletRequest request, String tokenType) {
+		Cookie[] cookies = request.getCookies();
 
-        for (Cookie cookie : cookies) {
-            if (tokenType.equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
+		if (cookies == null) {
+			return null;
+		}
+
+		for (Cookie cookie : cookies) {
+			if (tokenType.equals(cookie.getName())) {
+				return cookie.getValue();
+			}
+		}
+		return null;
+	}
 
 }

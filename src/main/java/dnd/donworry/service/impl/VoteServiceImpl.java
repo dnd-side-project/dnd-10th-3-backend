@@ -2,6 +2,7 @@ package dnd.donworry.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,11 +12,12 @@ import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.selection.SelectionRequestDto;
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
-import dnd.donworry.domain.dto.vote.VoteResponseDtoWithSelection;
+import dnd.donworry.domain.dto.vote.VoteResponseDto;
 import dnd.donworry.domain.dto.vote.VoteUpdateDto;
 import dnd.donworry.domain.entity.OptionImage;
 import dnd.donworry.domain.entity.Selection;
 import dnd.donworry.domain.entity.User;
+import dnd.donworry.domain.entity.UserVote;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
 import dnd.donworry.repository.OptionImageRepository;
@@ -42,7 +44,7 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	@Transactional
-	public VoteResponseDtoWithSelection create(String email, VoteRequestDto voteRequestDto) {
+	public VoteResponseDto create(String email, VoteRequestDto voteRequestDto) {
 
 		if (voteRequestDto.getSelections().size() < 2) {
 			throw new CustomException(ErrorCode.SELECTION_SIZE_UNDER_TWO);
@@ -55,7 +57,7 @@ public class VoteServiceImpl implements VoteService {
 
 		selections.forEach(vote::addSelection);
 
-		return VoteResponseDtoWithSelection.of(vote);
+		return VoteResponseDto.of(vote);
 	}
 
 	@Override
@@ -70,15 +72,15 @@ public class VoteServiceImpl implements VoteService {
 		voteRepository.delete(vote);
 	}
 
-	public VoteResponseDtoWithSelection findVoteDetail(Long voteId, String email) {
+	public VoteResponseDto findVoteDetail(Long voteId, String email) {
 		Vote vote = voteRepository.findByIdCustom(voteId);
 		vote.addView();
-		return VoteResponseDtoWithSelection.of(vote);
+		return setUserSelection(vote, email);
 	}
 
 	@Override
 	@Transactional
-	public VoteResponseDtoWithSelection update(VoteUpdateDto voteUpdateDto, String email) {
+	public VoteResponseDto update(VoteUpdateDto voteUpdateDto, String email) {
 		Vote vote = voteRepository.findById(voteUpdateDto.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
 
@@ -87,22 +89,25 @@ public class VoteServiceImpl implements VoteService {
 		}
 
 		vote.update(voteUpdateDto);
-		return VoteResponseDtoWithSelection.of(vote);
+		return setUserSelection(vote, email);
 	}
 
 	@Override
-	public List<VoteResponseDtoWithSelection> findAllVotes(String email) {
-		return voteRepository.findAllCustom();
+	public List<VoteResponseDto> findAllVotes(String email) {
+		if (email == null) {
+			return voteRepository.findAllCustom().stream().map(VoteResponseDto::of).toList();
+		}
+		return voteRepository.findAllCustom().stream().map(v -> setUserSelection(v, email)).toList();
 	}
 
 	@Override
-	public List<VoteResponseDtoWithSelection> findMyVotes(String email) {
-		return voteRepository.findMyVotes(email);
+	public List<VoteResponseDto> findMyVotes(String email) {
+		return voteRepository.findMyVotes(email).stream().map(v -> setUserSelection(v, email)).toList();
 	}
 
 	@Override
-	public VoteResponseDtoWithSelection findBestVote() {
-		return VoteResponseDtoWithSelection.of(voteRepository.findBestVote());
+	public VoteResponseDto findBestVote() {
+		return VoteResponseDto.of(voteRepository.findBestVote());
 	}
 
 	@Transactional
@@ -148,4 +153,12 @@ public class VoteServiceImpl implements VoteService {
 		return userVoteRepository.findUserSelectionForVote(email, voteId);
 	}
 
+	private VoteResponseDto setUserSelection(Vote vote, String email) {
+		Optional<UserVote> userVote = userVoteRepository.findUserVoteByEmailAndVoteId(email, vote.getId());
+
+		VoteResponseDto voteResponseDto = VoteResponseDto.of(vote);
+		userVote.ifPresent(value -> voteResponseDto.setSelected(value.getSelection().getId()));
+
+		return voteResponseDto;
+	}
 }

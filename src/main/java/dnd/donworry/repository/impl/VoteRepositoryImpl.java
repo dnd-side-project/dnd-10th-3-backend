@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import dnd.donworry.domain.constants.ErrorCode;
-import dnd.donworry.domain.dto.vote.VoteResponseDtoWithSelection;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
 import dnd.donworry.repository.Support.Querydsl4RepositorySupport;
@@ -22,14 +21,14 @@ public class VoteRepositoryImpl extends Querydsl4RepositorySupport implements Vo
 	}
 
 	@Override
-	public List<VoteResponseDtoWithSelection> findMyVotes(String email) {
+	public List<Vote> findMyVotes(String email) {
 		return selectFrom(vote)
 			.leftJoin(vote.user, user).fetchJoin()
 			.leftJoin(vote.selections, selection).fetchJoin()
 			.leftJoin(selection.optionImage, optionImage).fetchJoin()
 			.where(vote.user.email.eq(email))
 			.orderBy(vote.views.desc())
-			.fetch().stream().map(VoteResponseDtoWithSelection::of).toList();
+			.fetch();
 	}
 
 	@Override
@@ -55,13 +54,13 @@ public class VoteRepositoryImpl extends Querydsl4RepositorySupport implements Vo
 	}
 
 	@Override
-	public List<VoteResponseDtoWithSelection> findAllCustom() {
+	public List<Vote> findAllCustom() {
 		return selectFrom(vote)
 			.leftJoin(vote.user, user).fetchJoin()
 			.leftJoin(vote.selections, selection).fetchJoin()
 			.leftJoin(selection.optionImage, optionImage).fetchJoin()
 			.orderBy(vote.views.desc())
-			.fetch().stream().map(VoteResponseDtoWithSelection::of).toList();
+			.fetch();
 	}
 
 }
