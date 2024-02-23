@@ -3,7 +3,6 @@ package dnd.donworry.service.impl;
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
-import dnd.donworry.domain.dto.comment.CommentResponseReadDto;
 import dnd.donworry.domain.entity.Comment;
 import dnd.donworry.domain.entity.CommentLike;
 import dnd.donworry.domain.entity.User;
@@ -19,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,18 +46,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public List<CommentResponseDto> getComments(String email, Long voteId, Long lastCommentId, int size) {
+        List<CommentResponseDto> list = new ArrayList<>();
         Vote vote = findVote(voteId);
-        List<CommentResponseReadDto> list = commentRepository.findCommentsByVote(vote, lastCommentId, size, email);
+        List<Comment> comments = commentRepository.findCommentsByVote(vote, lastCommentId, size);
 
-        if (lastCommentId == 0L && list.isEmpty()) {
+        if (lastCommentId == 0L && comments.isEmpty()) {
             throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
-        } else if (list.isEmpty()) {
+        } else if (comments.isEmpty()) {
             throw new CustomException(ErrorCode.COMMENT_SEARCH_NOT_FOUND);
         }
+        comments.forEach(comment -> {
+            Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(comment.getId());
+            boolean isStatus = commentLike.isEmpty() || !commentLike.get().isStatus();
 
-        return list.stream()
-                .map(CommentResponseDto::ofRead)
-                .collect(Collectors.toList());
+            list.add(CommentResponseDto.of(comment, !isStatus));
+        });
+
+        return list;
     }
 
     @Transactional

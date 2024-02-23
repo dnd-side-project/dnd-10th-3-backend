@@ -61,18 +61,4 @@ public class CommentResponseDto {
                 .build();
     }
 
-    public static CommentResponseDto ofRead(CommentResponseReadDto readDto) {
-        return CommentResponseDto.builder()
-                .commentId(readDto.getCommentId())
-                .voteId(readDto.getVoteId())
-                .userId(readDto.getUserId())
-                .content(readDto.getContent())
-                .status(readDto.isStatus())
-                .avatar(readDto.getAvatar())
-                .nickname(readDto.getNickname())
-                .likes(readDto.getLikes())
-                .createdAt(TimeUtil.toTimeStampString(readDto.getCreatedAt()))
-                .modifiedAt(TimeUtil.toTimeStampString(readDto.getModifiedAt()))
-                .build();
-    }
 }
