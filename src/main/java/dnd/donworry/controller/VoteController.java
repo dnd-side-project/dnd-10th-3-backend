@@ -60,9 +60,11 @@ public class VoteController {
 	})
 	public ResResult<VoteResponseDto> create(
 		@RequestPart(value = "voteRequestDto") VoteRequestDto voteRequestDto,
-		@RequestPart(value = "images") List<MultipartFile> images,
+		@RequestPart(value = "images", required = false) List<MultipartFile> images,
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response) {
-		voteRequestDto.mapImages(images);
+		if (images != null) {
+			voteRequestDto.mapImages(images);
+		}
 		return ResponseCode.VOTE_CREATED.toResponse(voteService.create(authentication.getName(), voteRequestDto),
 			response);
 	}
