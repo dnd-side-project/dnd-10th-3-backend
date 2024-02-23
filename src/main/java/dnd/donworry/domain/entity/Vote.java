@@ -91,4 +91,12 @@ public class Vote extends BaseEntity {
 	public void addSelection(Selection selection) {
 		this.selections.add(selection);
 	}
+
+	public void addVoter() {
+		this.voters++;
+	}
+
+	public void minusVoter() {
+		this.voters--;
+	}
 }
