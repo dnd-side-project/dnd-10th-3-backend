@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -34,10 +35,11 @@ public class Vote extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Setter
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", orphanRemoval = true)
 	private List<Selection> selections = new ArrayList<>();
 
 	@Column(nullable = false)
@@ -72,6 +74,7 @@ public class Vote extends BaseEntity {
 			.content(voteRequestDto.getContent())
 			.closeDate(voteRequestDto.getCloseDate())
 			.category(Category.of(voteRequestDto.getCategory()))
+			.selections(new ArrayList<>())
 			.build();
 	}
 
@@ -83,5 +86,9 @@ public class Vote extends BaseEntity {
 
 	public void addView() {
 		this.views++;
+	}
+
+	public void addSelection(Selection selection) {
+		this.selections.add(selection);
 	}
 }
