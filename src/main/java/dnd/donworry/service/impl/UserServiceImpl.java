@@ -1,10 +1,5 @@
 package dnd.donworry.service.impl;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.dto.user.UserResponseDto;
 import dnd.donworry.domain.entity.User;
@@ -16,6 +11,8 @@ import dnd.donworry.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -29,11 +26,11 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	public void deleteUser(String email) {
-		Optional<User> user = userRepository.findUserByEmail(email);
-		user.ifPresent(userRepository::delete);
-		if (refreshTokenRepository.findById(email).isPresent()) {
-			refreshTokenRepository.deleteById(email);
-		}
+		userRepository.findUserByEmail(email)
+						.ifPresent(userRepository::delete);
+		refreshTokenRepository.findByValue(email)
+				.ifPresent(token -> refreshTokenRepository.deleteById(token.getKey()));
+
 	}
 
 	@Transactional
@@ -53,6 +50,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void logout(String email, HttpServletResponse response) {
 		cookieUtil.deleteCookie(response, ACCESS_TOKEN, REFRESH_TOKEN);
-		refreshTokenRepository.deleteById(email);
+		refreshTokenRepository.findByValue(email)
+				.ifPresent(token -> refreshTokenRepository.deleteById(token.getKey()));
 	}
 }

@@ -75,9 +75,11 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private RefreshToken fetchRefreshTokenByEmail(String email) {
-        log.info(email);
-        return refreshTokenRepository.findByValue(email)
+        RefreshToken refreshToken = refreshTokenRepository.findByValue(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+
+        log.info("남은 일 수: " + refreshToken.getExpiration() / (60 * 60 * 24));
+        return refreshToken;
     }
 
     private RefreshToken fetchRefreshTokenById(String refreshToken) {
@@ -130,7 +132,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         refreshTokenRepository.save(
                 new RefreshToken(tokenDto.getRefreshToken(), email,
-                        jwtProvider.getRefreshTokenExpiredTime()));
+                        jwtProvider.getRefreshTokenExpiredTime()/1000));
     }
 
     private void setAuthentication(HttpServletRequest request, String email) {
