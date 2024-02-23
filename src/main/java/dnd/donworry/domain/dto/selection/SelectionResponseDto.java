@@ -37,7 +37,7 @@ public class SelectionResponseDto {
 			.id(selection.getId())
 			.content(selection.getContent())
 			.count(selection.getCount())
-			.imagePath(selection.getOptionImage().getPath())
+			.imagePath(selection.getOptionImage() == null ? null : selection.getOptionImage().getPath())
 			.build();
 	}
 
