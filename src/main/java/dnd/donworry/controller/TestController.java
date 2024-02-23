@@ -1,15 +1,5 @@
 package dnd.donworry.controller;
 
-import java.util.List;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
 import dnd.donworry.domain.dto.test.TestRequestDto;
@@ -25,6 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -71,7 +65,7 @@ public class TestController {
 			testService.saveResult(authentication != null ? authentication.getName() : null, testRequestDto), response);
 	}
 
-	@GetMapping("/result/{resultId}/{share}")
+	@GetMapping("/result/{resultId}")
 	@Operation(summary = "테스트 결과 조회", description = "테스트 결과를 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "테스트 결과 조회 성공"),
@@ -92,7 +86,6 @@ public class TestController {
 			examples = @ExampleObject(value = "{\n  \"code\": \"401\", \n \"message\": \"유효한 토큰이 존재하지 않습니다.\"\n}")))
 	})
 	public ResResult<TestResponseDto> findResult(@PathVariable("resultId") Long resultId,
-		@PathVariable("share") Boolean share,
 		HttpServletResponse response) {
 		return ResponseCode.TEST_SUCCESS.toResponse(testService.findResult(resultId), response);
 	}
