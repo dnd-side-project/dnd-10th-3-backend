@@ -1,10 +1,5 @@
 package dnd.donworry.service.impl;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import dnd.donworry.domain.dto.jwt.TokenDto;
 import dnd.donworry.domain.dto.user.LoginResponseDto;
 import dnd.donworry.domain.dto.user.UserDto;
@@ -20,6 +15,10 @@ import dnd.donworry.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class OauthServiceImpl implements OauthService {
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByValue(email);
 		refreshToken.ifPresent(refreshTokenRepository::delete);
 		refreshTokenRepository.save(
-			new RefreshToken(tokenDto.getRefreshToken(), email, jwtProvider.getRefreshTokenExpiredTime()));
+			new RefreshToken(tokenDto.getRefreshToken(), email, jwtProvider.getRefreshTokenExpiredTime()/1000));
 		cookieUtil.setCookie(response, REFRESH_TOKEN, tokenDto.getRefreshToken(),
 			jwtProvider.getRefreshTokenExpiredTime());
 		cookieUtil.setCookie(response, ACCESS_TOKEN, tokenDto.getAccessToken(),
