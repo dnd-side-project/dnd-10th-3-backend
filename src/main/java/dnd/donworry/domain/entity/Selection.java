@@ -51,4 +51,7 @@ public class Selection {
 		return this;
 	}
 
+	public void addCount() {
+		this.count++;
+	}
 }

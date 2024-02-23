@@ -2,6 +2,7 @@ package dnd.donworry.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import dnd.donworry.domain.entity.Selection;
 import dnd.donworry.domain.entity.UserVote;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.repository.SelectionRepository;
@@ -33,9 +34,12 @@ public class UserVoteServiceImpl implements UserVoteService {
 		});
 
 		vote.addVoter();
+		Selection selection = selectionRepository.findByIdCustom(selectionId);
+		selection.addCount();
+		
 		if (selectionId != null) {
 			userVoteRepository.save(
-				UserVote.of(userRepository.findByEmailCustom(email), selectionRepository.findByIdCustom(selectionId)));
+				UserVote.of(userRepository.findByEmailCustom(email), selection));
 		}
 
 	}
