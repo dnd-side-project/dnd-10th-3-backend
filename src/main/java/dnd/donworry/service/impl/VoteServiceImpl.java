@@ -19,11 +19,13 @@ import dnd.donworry.domain.entity.Selection;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.UserVote;
 import dnd.donworry.domain.entity.Vote;
+import dnd.donworry.domain.entity.VoteLike;
 import dnd.donworry.exception.CustomException;
 import dnd.donworry.repository.OptionImageRepository;
 import dnd.donworry.repository.SelectionRepository;
 import dnd.donworry.repository.UserRepository;
 import dnd.donworry.repository.UserVoteRepository;
+import dnd.donworry.repository.VoteLikeRepository;
 import dnd.donworry.repository.VoteRepository;
 import dnd.donworry.service.VoteService;
 import jakarta.transaction.Transactional;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class VoteServiceImpl implements VoteService {
+	private final VoteLikeRepository voteLikeRepository;
 
 	private final SelectionRepository selectionRepository;
 	private final VoteRepository voteRepository;
@@ -72,6 +75,7 @@ public class VoteServiceImpl implements VoteService {
 		voteRepository.delete(vote);
 	}
 
+	@Transactional
 	public VoteResponseDto findVoteDetail(Long voteId, String email) {
 		Vote vote = voteRepository.findByIdCustom(voteId);
 		vote.addView();
@@ -129,6 +133,29 @@ public class VoteServiceImpl implements VoteService {
 		VoteResponseDto bestVote = VoteResponseDto.of(voteRepository.findBestVote());
 		bestVote.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), bestVote.getVoters()));
 		return bestVote;
+	}
+
+	@Override
+	@Transactional
+	public Boolean updateLikes(Long voteId, String name) {
+		Vote vote = voteRepository.findById(voteId).orElseThrow(() -> new CustomException(ErrorCode.VOTE_NOT_FOUND));
+		User user = userRepository.findByEmailCustom(name);
+		Optional<VoteLike> voteLikeOp = voteLikeRepository.findByVoteAndUserCustom(vote, user);
+		if (voteLikeOp.isPresent()) {
+			VoteLike voteLike = voteLikeOp.get();
+			if (voteLike.isStatus()) {
+				voteLike.updateStatus();
+				vote.minusLike();
+				return false;
+			} else {
+				voteLike.updateStatus();
+				vote.addLike();
+				return true;
+			}
+		}
+		voteLikeRepository.save(VoteLike.toEntity(vote, user));
+		vote.addLike();
+		return true;
 	}
 
 	@Transactional

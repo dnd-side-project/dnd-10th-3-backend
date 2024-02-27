@@ -21,4 +21,6 @@ public interface VoteService {
 	VoteResponseDto findVoteDetail(Long voteId, String email);
 
 	VoteResponseDto findBestVote();
+
+	Boolean updateLikes(Long voteId, String email);
 }

@@ -89,6 +89,14 @@ public class Vote extends BaseEntity {
 		this.voters--;
 	}
 
+	public void addLike() {
+		this.likes++;
+	}
+
+	public void minusLike() {
+		this.likes--;
+	}
+
 	public void addCommentCount() {this.commentCount++;}
 
 	public void minusCommentCount() {this.commentCount++;}
