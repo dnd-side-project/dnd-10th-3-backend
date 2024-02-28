@@ -39,10 +39,13 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponseDto createComment(CommentRequestDto commentRequestDto, Long voteId, String email) {
 
-        Comment savedComment = commentRepository.save(
+        Comment comment = commentRepository.save(
                 Comment.toEntity(findVote(voteId), findUser(email), commentRequestDto));
 
-        return CommentResponseDto.of(savedComment, false);
+        comment.getVote().addCommentCount();
+        voteRepository.save(comment.getVote());
+
+        return CommentResponseDto.of(comment, false);
     }
 
     public List<CommentResponseDto> getComments(String email, Long voteId, Long lastCommentId, int size) {
@@ -83,6 +86,10 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId, String email) {
         Comment comment = validateUserAndComment(commentId, email);
         commentRepository.delete(comment);
+
+        comment.getVote().minusCommentCount();
+        voteRepository.save(comment.getVote());
+
     }
 
     public CommentResponseDto updateEmpathy(Long commentId, String email) {
