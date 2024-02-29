@@ -57,8 +57,7 @@ public class CommentServiceImpl implements CommentService {
         Vote vote = findVote(voteId);
         Page<Comment> comment = commentRepository.findCommentsByVote(vote, pageable);
 
-        Pages pages = Pages.of(comment.getTotalPages(), comment.getTotalElements(),
-                comment.hasPrevious(), comment.hasNext(), comment.getNumber());
+        Pages pages = Pages.of(comment);
 
         comment.getContent().forEach(c -> {
             Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(c.getId());
