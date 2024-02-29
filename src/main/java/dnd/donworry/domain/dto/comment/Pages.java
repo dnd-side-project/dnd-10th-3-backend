@@ -10,10 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pages {
+
     long getTotalPages;
+
     long getTotalElements;
 
     int getNumber;
+
     boolean hasPrevious;
 
     boolean hasNext;

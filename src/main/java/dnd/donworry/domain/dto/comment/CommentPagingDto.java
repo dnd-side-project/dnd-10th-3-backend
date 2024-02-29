@@ -1,6 +1,5 @@
 package dnd.donworry.domain.dto.comment;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentPagingDto {
     private List<CommentResponseDto> list = new ArrayList<>();
     private Pages pages;
