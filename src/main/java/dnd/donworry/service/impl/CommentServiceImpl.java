@@ -1,8 +1,10 @@
 package dnd.donworry.service.impl;
 
 import dnd.donworry.domain.constants.ErrorCode;
+import dnd.donworry.domain.dto.comment.CommentPagingDto;
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
+import dnd.donworry.domain.dto.comment.Pages;
 import dnd.donworry.domain.entity.Comment;
 import dnd.donworry.domain.entity.CommentLike;
 import dnd.donworry.domain.entity.User;
@@ -15,6 +17,8 @@ import dnd.donworry.repository.VoteRepository;
 import dnd.donworry.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,24 +52,21 @@ public class CommentServiceImpl implements CommentService {
         return CommentResponseDto.of(comment, false);
     }
 
-    public List<CommentResponseDto> getComments(String email, Long voteId, Long lastCommentId, int size) {
+    public CommentPagingDto getComments(String email, Long voteId, Pageable pageable) {
         List<CommentResponseDto> list = new ArrayList<>();
         Vote vote = findVote(voteId);
-        List<Comment> comments = commentRepository.findCommentsByVote(vote, lastCommentId, size);
+        Page<Comment> comment = commentRepository.findCommentsByVote(vote, pageable);
 
-        if (lastCommentId == 0L && comments.isEmpty()) {
-            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
-        } else if (comments.isEmpty()) {
-            throw new CustomException(ErrorCode.COMMENT_SEARCH_NOT_FOUND);
-        }
-        comments.forEach(comment -> {
-            Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(comment.getId());
+        Pages pages = Pages.of(comment);
+
+        comment.getContent().forEach(c -> {
+            Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(c.getId());
             boolean isStatus = commentLike.isEmpty() || !commentLike.get().isStatus();
 
-            list.add(CommentResponseDto.of(comment, !isStatus));
+            list.add(CommentResponseDto.of(c, !isStatus));
         });
 
-        return list;
+        return CommentPagingDto.of(list, pages);
     }
 
     @Transactional

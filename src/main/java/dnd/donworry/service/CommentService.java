@@ -1,9 +1,9 @@
 package dnd.donworry.service;
 
+import dnd.donworry.domain.dto.comment.CommentPagingDto;
 import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import dnd.donworry.domain.dto.comment.CommentResponseDto;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
@@ -15,5 +15,5 @@ public interface CommentService {
 
     CommentResponseDto updateEmpathy(Long commentId, String email);
 
-    List<CommentResponseDto> getComments(String email ,Long voteId, Long lastCommentId, int size);
+    CommentPagingDto getComments(String email, Long voteId, Pageable pageable);
 }

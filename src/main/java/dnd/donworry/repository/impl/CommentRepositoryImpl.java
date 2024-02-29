@@ -1,14 +1,17 @@
 package dnd.donworry.repository.impl;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import dnd.donworry.domain.entity.Comment;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.repository.Support.Querydsl4RepositorySupport;
 import dnd.donworry.repository.custom.CommentRepositoryCustom;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 import static dnd.donworry.domain.entity.QComment.comment;
+
 
 public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements CommentRepositoryCustom {
     public CommentRepositoryImpl() {
@@ -16,38 +19,21 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
     }
 
     @Override
-    public List<Comment> findCommentsByVote(Vote vote, Long lastCommentId, int size) {
-        return selectFrom(comment)
-                .where(GtCommentId(lastCommentId), comment.vote.eq(vote))
+    public Page<Comment> findCommentsByVote(Vote voteEntity, Pageable pageable) {
+        List<Comment> comments = selectFrom(comment)
+                .where(comment.vote.eq(voteEntity))
                 .orderBy(comment.createdAt.asc())
-                .limit(size)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
-    }
-//    @Override
-//    public List<CommentResponseReadDto> findCommentsByVote(Vote vote, Long lastCommentId, int size, String email) {
-//        return select(Projections.fields(CommentResponseReadDto.class,
-//                comment.id.as("commentId"),
-//                comment.vote.id.as("voteId"),
-//                comment.user.id.as("userId"),
-//                comment.user.nickname,
-//                comment.content,
-//                comment.user.avatar,
-//                comment.likes,
-//                comment.createdAt,
-//                comment.modifiedAt,
-//                commentLike.status.as("status")))
-//                .from(comment)
-//                .leftJoin(commentLike)
-//                .on(commentLike.comment.eq(comment).and(commentLike.user.email.eq(email)))
-//                .where(GtCommentId(lastCommentId), comment.vote.eq(vote))
-//                .orderBy(comment.createdAt.asc())
-//                .limit(size)
-//                .fetch();
-//    }
 
-    private BooleanExpression GtCommentId(Long commentId) {
-        if (commentId == null) return null;
-        return comment.id.gt(commentId);
-    }
+        Long total = select(comment.id.count())
+                .from(comment)
+                .where(comment.vote.eq(voteEntity))
+                .fetchOne();
 
+        long totalCount = (total != null) ? total : 0L;
+
+        return new PageImpl<>(comments, pageable, totalCount);
+    }
 }
