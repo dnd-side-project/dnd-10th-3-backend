@@ -1,14 +1,18 @@
 package dnd.donworry.domain.dto.vote;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
 import dnd.donworry.domain.entity.User;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.util.TimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.time.LocalDate;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -63,22 +67,26 @@ public class VoteResponseDto {
     @Setter
     private Long selected;
 
-    public static VoteResponseDto of(Vote vote) {
-        VoteResponseDto voteResponseDto = VoteResponseDto.builder()
-                .id(vote.getId())
-                .user(vote.getUser())
-                .title(vote.getTitle())
-                .content(vote.getContent())
-                .commentCount(vote.getCommentCount())
-                .likes(vote.getLikes())
-                .views(vote.getViews())
-                .voters(vote.getVoters())
-                .status(vote.isStatus())
-                .category(vote.getCategory().getName())
-                .closeDate(vote.getCloseDate())
-                .createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
-                .updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))
-                .build();
+	@Schema(description = "공감 여부", example = "false")
+	private Boolean isLiked;
+
+	public static VoteResponseDto of(Vote vote, boolean isLiked) {
+		VoteResponseDto voteResponseDto = VoteResponseDto.builder()
+			.id(vote.getId())
+			.user(vote.getUser())
+			.title(vote.getTitle())
+			.content(vote.getContent())
+			.likes(vote.getLikes())
+			.views(vote.getViews())
+			.voters(vote.getVoters())
+			.status(vote.isStatus())
+			.category(vote.getCategory().getName())
+			.closeDate(vote.getCloseDate())
+			.createdAt(TimeUtil.toTimeStampString(vote.getCreatedAt()))
+			.updatedAt(TimeUtil.toTimeStampString(vote.getModifiedAt()))
+			.isLiked(isLiked)
+			.commentCount(vote.getCommentCount())
+			.build();
 
         voteResponseDto.selections = vote.getSelections()
                 .stream()

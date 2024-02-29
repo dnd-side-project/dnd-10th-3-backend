@@ -60,7 +60,7 @@ public class VoteServiceImpl implements VoteService {
 
 		selections.forEach(vote::addSelection);
 
-		return VoteResponseDto.of(vote);
+		return VoteResponseDto.of(vote, false);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	public List<VoteResponseDto> findAllVotes(String email) {
 		if (email == null) {
-			return voteRepository.findAllCustom().stream().map(VoteResponseDto::of).toList();
+			return voteRepository.findAllCustom().stream().map(v -> VoteResponseDto.of(v, false)).toList();
 		}
 		List<VoteResponseDto> votes = voteRepository.findAllCustom()
 			.stream()
@@ -130,7 +130,7 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	public VoteResponseDto findBestVote() {
-		VoteResponseDto bestVote = VoteResponseDto.of(voteRepository.findBestVote());
+		VoteResponseDto bestVote = VoteResponseDto.of(voteRepository.findBestVote(), false);
 		bestVote.getSelections().forEach(s -> s.setVotePercentage(s.getCount(), bestVote.getVoters()));
 		return bestVote;
 	}
@@ -204,9 +204,14 @@ public class VoteServiceImpl implements VoteService {
 	private VoteResponseDto setUserSelection(Vote vote, String email) {
 		Optional<UserVote> userVote = userVoteRepository.findUserVoteByEmailAndVoteId(email, vote.getId());
 
-		VoteResponseDto voteResponseDto = VoteResponseDto.of(vote);
+		VoteResponseDto voteResponseDto = VoteResponseDto.of(vote, isLiked(email, vote));
 		userVote.ifPresent(value -> voteResponseDto.setSelected(value.getSelection().getId()));
 
 		return voteResponseDto;
+	}
+
+	private boolean isLiked(String email, Vote vote) {
+		return voteLikeRepository.findByVoteAndUserCustom(
+			vote, userRepository.findByEmailCustom(email)).isPresent();
 	}
 }
