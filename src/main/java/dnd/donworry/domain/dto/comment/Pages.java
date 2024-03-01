@@ -13,11 +13,11 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 public class Pages {
 
-    long getTotalPages;
+    long totalPages;
 
-    long getTotalElements;
+    long totalElements;
 
-    int getNumber;
+    int currentPage;
 
     boolean hasPrevious;
 
@@ -25,9 +25,9 @@ public class Pages {
 
     public static Pages of(Page<Comment> page) {
         return Pages.builder()
-                .getNumber(page.getNumber())
-                .getTotalPages(page.getTotalPages())
-                .getTotalElements(page.getTotalElements())
+                .currentPage(page.getNumber())
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
                 .hasNext(page.hasNext())
                 .hasPrevious(page.hasPrevious())
                 .build();
