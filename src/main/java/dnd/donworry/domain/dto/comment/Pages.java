@@ -1,11 +1,11 @@
 package dnd.donworry.domain.dto.comment;
 
-import dnd.donworry.domain.entity.Comment;
+import org.springframework.data.domain.Page;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
@@ -13,23 +13,23 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 public class Pages {
 
-    long totalPages;
+	long totalPages;
 
-    long totalElements;
+	long totalElements;
 
-    int currentPage;
+	int currentPage;
 
-    boolean hasPrevious;
+	boolean hasPrevious;
 
-    boolean hasNext;
+	boolean hasNext;
 
-    public static Pages of(Page<Comment> page) {
-        return Pages.builder()
-                .currentPage(page.getNumber())
-                .totalPages(page.getTotalPages())
-                .totalElements(page.getTotalElements())
-                .hasNext(page.hasNext())
-                .hasPrevious(page.hasPrevious())
-                .build();
-    }
+	public static <T> Pages of(Page<T> page) {
+		return Pages.builder()
+			.currentPage(page.getNumber())
+			.totalPages(page.getTotalPages())
+			.totalElements(page.getTotalElements())
+			.hasNext(page.hasNext())
+			.hasPrevious(page.hasPrevious())
+			.build();
+	}
 }

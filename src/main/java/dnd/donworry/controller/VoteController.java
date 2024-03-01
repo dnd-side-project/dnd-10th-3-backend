@@ -2,6 +2,9 @@ package dnd.donworry.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import dnd.donworry.domain.constants.ResResult;
 import dnd.donworry.domain.constants.ResponseCode;
+import dnd.donworry.domain.dto.vote.VotePagingDto;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
 import dnd.donworry.domain.dto.vote.VoteResponseDto;
 import dnd.donworry.service.VoteService;
@@ -191,5 +195,26 @@ public class VoteController {
 		Boolean votingStatus = voteService.updateLikes(voteId, authentication.getName());
 		return votingStatus ? ResponseCode.LIKES_ADD.toResponse(null, response)
 			: ResponseCode.LIKES_CANCEL.toResponse(null, response);
+	}
+
+	@GetMapping("/search/{keyword}")
+	@Operation(summary = "투표 검색", description = "투표를 검색합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "투표 검색 성공"),
+		@ApiResponse(responseCode = "400", description = "투표 검색 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"400\", \n \"message\": \"투표 검색에 실패했습니다.\"\n}"))),
+		@ApiResponse(responseCode = "404", description = "투표 검색 실패", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"404\", \n \"message\": \"입력값이 잘못되었습니다.\"\n}"))),
+		@ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(
+			mediaType = "application/json",
+			examples = @ExampleObject(value = "{\n  \"code\": \"500\", \n \"message\": \"서버에 에러가 발생했습니다.\"\n}")))
+	})
+	public ResResult<VotePagingDto> searchVotes(@PathVariable("keyword") String keyword,
+		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response,
+		@PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
+		return ResponseCode.VOTE_FOUND.toResponse(voteService.searchVotes(keyword, authentication.getName(), pageable),
+			response);
 	}
 }
