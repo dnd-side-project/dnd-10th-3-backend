@@ -211,7 +211,8 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	private boolean isLiked(String email, Vote vote) {
-		return voteLikeRepository.findByVoteAndUserCustom(
-			vote, userRepository.findByEmailCustom(email)).isPresent();
+		Optional<VoteLike> voteLike = voteLikeRepository.findByVoteAndUserCustom(vote,
+			userRepository.findByEmailCustom(email));
+		return voteLike.map(VoteLike::isStatus).orElse(false);
 	}
 }
