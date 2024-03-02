@@ -8,6 +8,10 @@ import static dnd.donworry.domain.entity.QVote.*;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import dnd.donworry.domain.constants.ErrorCode;
 import dnd.donworry.domain.entity.Vote;
 import dnd.donworry.exception.CustomException;
@@ -61,6 +65,28 @@ public class VoteRepositoryImpl extends Querydsl4RepositorySupport implements Vo
 			.leftJoin(selection.optionImage, optionImage).fetchJoin()
 			.orderBy(vote.views.desc())
 			.fetch();
+	}
+
+	@Override
+	public Page<Vote> searchVotes(String keyword, Pageable pageable) {
+		List<Vote> votes = selectFrom(vote)
+			.leftJoin(vote.user, user).fetchJoin()
+			.leftJoin(vote.selections, selection).fetchJoin()
+			.leftJoin(selection.optionImage, optionImage).fetchJoin()
+			.where(vote.title.contains(keyword).or(vote.content.contains(keyword)))
+			.orderBy(vote.views.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		Long total = select(vote.id.count())
+			.from(vote)
+			.where(vote.title.contains(keyword).or(vote.content.contains(keyword)))
+			.fetchOne();
+
+		long totalCount = (total != null) ? total : 0L;
+
+		return new PageImpl<>(votes, pageable, totalCount);
 	}
 
 }

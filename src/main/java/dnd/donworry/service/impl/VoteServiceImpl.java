@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import dnd.donworry.core.manager.FileManager;
 import dnd.donworry.domain.constants.ErrorCode;
+import dnd.donworry.domain.dto.comment.Pages;
 import dnd.donworry.domain.dto.selection.SelectionRequestDto;
 import dnd.donworry.domain.dto.selection.SelectionResponseDto;
+import dnd.donworry.domain.dto.vote.VotePagingDto;
 import dnd.donworry.domain.dto.vote.VoteRequestDto;
 import dnd.donworry.domain.dto.vote.VoteResponseDto;
 import dnd.donworry.domain.dto.vote.VoteUpdateDto;
@@ -156,6 +160,15 @@ public class VoteServiceImpl implements VoteService {
 		voteLikeRepository.save(VoteLike.toEntity(vote, user));
 		vote.addLike();
 		return true;
+	}
+
+	@Override
+	public VotePagingDto searchVotes(String keyword, String email, Pageable pageable) {
+		Page<Vote> votePage = voteRepository.searchVotes(keyword, pageable);
+		List<VoteResponseDto> votes = votePage.getContent().stream().map(v -> setUserSelection(v, email)).toList();
+		Pages pages = Pages.of(votePage);
+		return VotePagingDto.of(votes, pages);
+
 	}
 
 	@Transactional
