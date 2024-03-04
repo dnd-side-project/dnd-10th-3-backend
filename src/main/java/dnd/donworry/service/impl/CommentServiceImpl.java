@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -68,6 +69,20 @@ public class CommentServiceImpl implements CommentService {
 
         return CommentPagingDto.of(list, pages);
     }
+
+    @Override
+    public List<CommentResponseDto> findAllComments(String email, Long voteId) {
+        List<Comment> comments = commentRepository.findAllCustom(voteId);
+
+        return comments.stream()
+                .map(c -> {
+                    Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(c.getId());
+                    boolean isStatus = commentLike.isEmpty() || !commentLike.get().isStatus();
+                    return CommentResponseDto.of(c, !isStatus);
+                })
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     @Override
