@@ -36,4 +36,15 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
 
         return new PageImpl<>(comments, pageable, totalCount);
     }
+
+    @Override
+    public List<Comment> findAllCustom(Long voteId) {
+        return selectFrom(comment)
+                .leftJoin(comment.vote).fetchJoin()
+                .where(comment.vote.id.eq(voteId))
+                .orderBy(comment.createdAt.asc())
+                .fetch();
+    }
+
+
 }
