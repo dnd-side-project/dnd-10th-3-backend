@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static dnd.donworry.domain.entity.QComment.comment;
+import static dnd.donworry.domain.entity.QCommentLike.commentLike;
 
 
 public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements CommentRepositoryCustom {
@@ -39,8 +40,9 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
 
     @Override
     public List<Comment> findAllCustom(Long voteId) {
+
         return selectFrom(comment)
-                .leftJoin(comment.vote).fetchJoin()
+                .leftJoin(comment.like, commentLike).fetchJoin()
                 .where(comment.vote.id.eq(voteId))
                 .orderBy(comment.createdAt.asc())
                 .fetch();

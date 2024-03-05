@@ -5,6 +5,8 @@ import dnd.donworry.domain.dto.comment.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -27,6 +29,10 @@ public class Comment extends BaseEntity {
 
     @Column(nullable = false)
     private int likes = 0;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentLike> like;
+
 
     public static Comment toEntity(Vote vote, User user, CommentRequestDto commentRequestDto) {
         return Comment.builder()
