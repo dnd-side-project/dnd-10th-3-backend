@@ -50,5 +50,6 @@ public class Comment extends BaseEntity {
 
     public void updateLike(boolean status) {
         this.likes += status ? 1 : -1;
+        if (this.likes < 0) this.likes = 0;
     }
 }
