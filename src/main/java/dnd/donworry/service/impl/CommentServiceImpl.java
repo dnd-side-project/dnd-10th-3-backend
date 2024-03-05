@@ -76,9 +76,8 @@ public class CommentServiceImpl implements CommentService {
 
         return comments.stream()
                 .map(c -> {
-                    Optional<CommentLike> commentLike = commentLikeRepository.findByCommentId(c.getId());
-                    boolean isStatus = commentLike.isEmpty() || !commentLike.get().isStatus();
-                    return CommentResponseDto.of(c, !isStatus);
+                    boolean isStatus = c.getLike().stream().anyMatch(like -> like.getUser().getEmail().equals(email) && like.isStatus());
+                    return CommentResponseDto.of(c, isStatus);
                 })
                 .collect(Collectors.toList());
     }
