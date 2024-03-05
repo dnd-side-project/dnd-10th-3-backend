@@ -100,6 +100,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId, String email) {
         Comment comment = validateUserAndComment(commentId, email);
+
+        commentLikeRepository.deleteByComment(comment);
+
         commentRepository.delete(comment);
 
         comment.getVote().minusCommentCount();
