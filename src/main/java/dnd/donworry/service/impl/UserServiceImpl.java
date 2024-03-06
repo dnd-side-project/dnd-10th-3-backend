@@ -53,4 +53,10 @@ public class UserServiceImpl implements UserService {
 		refreshTokenRepository.findByValue(email)
 				.ifPresent(token -> refreshTokenRepository.deleteById(token.getKey()));
 	}
+
+	@Override
+	public UserResponseDto.READ getUser(String email) {
+		User user = userRepository.findUserByEmail(email).orElseThrow(()->new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+		return UserResponseDto.READ.ofReadResponse(user);
+	}
 }
