@@ -9,4 +9,6 @@ public interface UserService {
     UserResponseDto.UPDATE updateUserNickname(String email, String nickname);
 
     void logout(String email, HttpServletResponse response);
+
+    UserResponseDto.READ getUser(String email);
 }
