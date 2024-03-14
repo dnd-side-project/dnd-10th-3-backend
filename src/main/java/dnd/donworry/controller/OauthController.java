@@ -29,6 +29,7 @@ public class OauthController {
 
 	private final OauthService oauthService;
 
+	// https://donworry.vercel.app/login/oauth2/code/kakao 로 변경
 	@GetMapping("/login/oauth2/code/kakao")
 	@Operation(summary = "로그인 및 회원가입", description = "카카오 로그인 API로 로그인 및 회원가입 합니다.")
 	@ApiResponses(value = {
