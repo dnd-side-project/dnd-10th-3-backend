@@ -52,7 +52,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.requestMatchers("/login/oauth2/code/kakao", "swagger-ui/**", "/v3/api-docs/**", "/api/v1/vote/all",
-					"index.html","/api/v1/vote/search/**")
+					"index.html", "/api/v1/vote/search/**")
 				.permitAll()
 				.anyRequest()
 				.authenticated())
@@ -93,6 +93,7 @@ public class SecurityConfig {
 				.requestMatchers("/swagger-ui/**")
 				//.requestMatchers("/api/v1/vote/all")
 				.requestMatchers("api/v1/test/result/**")
+				.requestMatchers("/api/v1/vote/search/**")
 				.requestMatchers("/api/v1/vote/best")
 				.requestMatchers("/index.html");
 	}

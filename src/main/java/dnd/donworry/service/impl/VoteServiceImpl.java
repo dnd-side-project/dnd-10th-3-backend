@@ -165,7 +165,11 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	public VotePagingDto searchVotes(String keyword, String email, Pageable pageable) {
 		Page<Vote> votePage = voteRepository.searchVotes(keyword, pageable);
-		List<VoteResponseDto> votes = votePage.getContent().stream().map(v -> setUserSelection(v, email)).toList();
+
+		List<VoteResponseDto> votes =
+			email == null
+				? votePage.getContent().stream().map(v -> VoteResponseDto.of(v, false)).toList()
+				: votePage.getContent().stream().map(v -> setUserSelection(v, email)).toList();
 		Pages pages = Pages.of(votePage);
 		return VotePagingDto.of(votes, pages);
 
