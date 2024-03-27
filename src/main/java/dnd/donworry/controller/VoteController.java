@@ -214,7 +214,12 @@ public class VoteController {
 	public ResResult<VotePagingDto> searchVotes(@PathVariable("keyword") String keyword,
 		@Parameter(hidden = true) Authentication authentication, HttpServletResponse response,
 		@PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
-		return ResponseCode.VOTE_FOUND.toResponse(voteService.searchVotes(keyword, authentication.getName(), pageable),
+		log.info(String.valueOf(authentication == null));
+		return ResponseCode.VOTE_FOUND.toResponse(
+			voteService.searchVotes(
+				keyword,
+				authentication != null ? authentication.getName() : null,
+				pageable),
 			response);
 	}
 }
